@@ -33,18 +33,23 @@ public static partial class HostConfiguration
         builder.Services.Configure<PasswordValidationSettings>(builder.Configuration.GetSection(nameof(PasswordValidationSettings)));
 
         // register db contexts
-        builder.Services.AddDbContext<IdentityDbContext>(options =>
+        builder.Services.AddDbContext<IdentityDbContext>(options => 
             options.UseNpgsql(builder.Configuration.GetConnectionString("DefaultConnection")));
 
         // register repositories
-        builder.Services.AddScoped<IUserRepository, UserRepository>();
+        builder.Services
+            .AddScoped<IUserRepository, UserRepository>()
+            .AddScoped<IRoleRepository, RoleRepository>();
 
         // register helper foundation services
-        builder.Services.AddTransient<IPasswordHasherService, PasswordHasherService>()
+        builder.Services
+            .AddTransient<IPasswordHasherService, PasswordHasherService>()
             .AddTransient<IPasswordGeneratorService, PasswordGeneratorService>();
 
         // register foundation data access services
-        builder.Services.AddScoped<IUserService, UserService>();
+        builder.Services
+            .AddScoped<IUserService, UserService>()
+            .AddScoped<IRoleService, RoleService>();
 
         // register other services
 

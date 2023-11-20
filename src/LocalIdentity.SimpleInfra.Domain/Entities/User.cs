@@ -19,4 +19,8 @@ public class User : AuditableEntity, IDeletionAuditableEntity, IModificationAudi
     public Guid? DeletedBy { get; set; }
     
     public Guid? ModifiedBy { get; set; }
+    
+    public Guid RoleId { get; set; }
+
+    public Role? Role { get; set; }
 }
