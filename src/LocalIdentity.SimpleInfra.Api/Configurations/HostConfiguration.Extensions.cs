@@ -4,10 +4,15 @@ using FluentValidation.AspNetCore;
 using LocalIdentity.SimpleInfra.Api.Data;
 using LocalIdentity.SimpleInfra.Application.Common.Identity.Services;
 using LocalIdentity.SimpleInfra.Application.Common.Notfications.Services;
+using LocalIdentity.SimpleInfra.Application.Common.RequestContexts.Brokers;
+using LocalIdentity.SimpleInfra.Domain.Brokers;
+using LocalIdentity.SimpleInfra.Domain.Brokers.Interfaces;
 using LocalIdentity.SimpleInfra.Infrastructure.Common.Identity.Services;
 using LocalIdentity.SimpleInfra.Infrastructure.Common.Notifications;
+using LocalIdentity.SimpleInfra.Infrastructure.Common.RequestContexts.Brokers;
 using LocalIdentity.SimpleInfra.Infrastructure.Common.Settings;
 using LocalIdentity.SimpleInfra.Persistence.DataContexts;
+using LocalIdentity.SimpleInfra.Persistence.Interceptors;
 using LocalIdentity.SimpleInfra.Persistence.Repositories;
 using LocalIdentity.SimpleInfra.Persistence.Repositories.Interfaces;
 using Microsoft.EntityFrameworkCore;
@@ -43,6 +48,25 @@ public static partial class HostConfiguration
         return builder;
     }
 
+    private static WebApplicationBuilder AddRequestContextTools(this WebApplicationBuilder builder)
+    {
+        builder.Services.AddHttpContextAccessor();
+        builder.Services
+            .AddScoped<IRequestUserContextProvider, RequestUserContextProvider>()
+            .AddScoped<IRequestContextProvider, RequestContextProvider>();
+
+        return builder;
+    }
+    
+    private static WebApplicationBuilder AddPersistence(this WebApplicationBuilder builder)
+    {
+        builder.Services
+            .AddScoped<UpdateAuditableInterceptor>()
+            .AddScoped<UpdateSoftDeletedInterceptor>();
+
+        return builder;
+    }
+
     private static WebApplicationBuilder AddNotificationInfrastructure(this WebApplicationBuilder builder)
     {
         // register configurations 
@@ -61,27 +85,28 @@ public static partial class HostConfiguration
 
         // register db contexts
         builder.Services.AddDbContext<IdentityDbContext>(
-            options => options.UseNpgsql(builder.Configuration.GetConnectionString("DefaultConnection"))
+            (provider, options) =>
+            {
+                options.UseNpgsql(builder.Configuration.GetConnectionString("DefaultConnection"));
+
+                var serviceScope = provider.CreateScope().ServiceProvider;
+                options.AddInterceptors(serviceScope.GetRequiredService<UpdateAuditableInterceptor>());
+                options.AddInterceptors(serviceScope.GetRequiredService<UpdateSoftDeletedInterceptor>());
+            }
         );
 
         // register repositories
-        builder.Services
-            .AddScoped<IUserRepository, UserRepository>()
-            .AddScoped<IRoleRepository, RoleRepository>();
+        builder.Services.AddScoped<IUserRepository, UserRepository>().AddScoped<IRoleRepository, RoleRepository>();
 
         // register helper foundation services
-        builder.Services
-            .AddTransient<IPasswordHasherService, PasswordHasherService>()
+        builder.Services.AddTransient<IPasswordHasherService, PasswordHasherService>()
             .AddTransient<IPasswordGeneratorService, PasswordGeneratorService>();
 
         // register foundation data access services
-        builder.Services
-            .AddScoped<IUserService, UserService>()
-            .AddScoped<IRoleService, RoleService>();
+        builder.Services.AddScoped<IUserService, UserService>().AddScoped<IRoleService, RoleService>();
 
         // register aggregator and orchestrator services
-        builder.Services
-            .AddScoped<IAccountAggregatorService, AccountAggregatorService>()
+        builder.Services.AddScoped<IAccountAggregatorService, AccountAggregatorService>()
             .AddScoped<IAuthAggregationService, AuthAggregationService>();
 
         return builder;
@@ -95,7 +120,7 @@ public static partial class HostConfiguration
 
         return builder;
     }
-    
+
     private static async ValueTask<WebApplication> SeedDataAsync(this WebApplication app)
     {
         var serviceScope = app.Services.CreateScope();

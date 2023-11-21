@@ -21,7 +21,7 @@ public class UserService(IUserRepository userRepository) : IUserService
 
     public async ValueTask<User> GetSystemUserAsync(bool asNoTracking = false, CancellationToken cancellationToken = default)
     {
-        return await userRepository.Get(user => user.Role!.Type == RoleType.Admin, asNoTracking)
+        return await userRepository.Get(user => user.Role!.Type == RoleType.System, asNoTracking)
             .Include(user => user.Role)
             .FirstAsync(cancellationToken);
     }

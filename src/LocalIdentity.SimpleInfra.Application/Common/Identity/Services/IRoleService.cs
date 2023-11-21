@@ -13,4 +13,6 @@ public interface IRoleService
     );
 
     ValueTask<Role?> GetByTypeAsync(RoleType roleType, bool asNoTracking = false, CancellationToken cancellationToken = default);
+
+    ValueTask<Guid> GetDefaultRoleId(CancellationToken cancellationToken = default);
 }

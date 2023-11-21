@@ -26,7 +26,7 @@ public class EmailOrchestrationService(IOptions<SmtpEmailSenderSettings> smtpSen
             // set receiver phone number and sender phone number
             var senderUser = (await userService.GetByIdAsync(request.SenderUserId!.Value, cancellationToken: cancellationToken))!;
             var receiverUser = (await userService.GetByIdAsync(request.ReceiverUserId, cancellationToken: cancellationToken))!;
-
+            
             // get template
             var template = GetTemplate(request.TemplateType);
 
@@ -34,9 +34,7 @@ public class EmailOrchestrationService(IOptions<SmtpEmailSenderSettings> smtpSen
             var body = Render(template.Body, request.Variables);
 
             // send message
-            Send(senderUser.EmailAddress, receiverUser.EmailAddress, template.Subject, body);
-
-            return true;
+            return Send(senderUser.EmailAddress, receiverUser.EmailAddress, template.Subject, body);
         };
 
         return await sendNotificationRequest.GetValueAsync();
@@ -91,10 +89,10 @@ public class EmailOrchestrationService(IOptions<SmtpEmailSenderSettings> smtpSen
 
     private bool Send(string senderEmailAddress, string receiverEmailAddress, string subject, string body)
     {
+        senderEmailAddress = string.IsNullOrWhiteSpace(senderEmailAddress) ? _smtpEmailSenderSettings.CredentialAddress : senderEmailAddress;
         var mail = new MailMessage(senderEmailAddress, receiverEmailAddress);
         mail.Subject = subject;
         mail.Body = body;
-        mail.IsBodyHtml = true;
 
         var smtpClient = new SmtpClient(_smtpEmailSenderSettings.Host, _smtpEmailSenderSettings.Port);
         smtpClient.Credentials = new NetworkCredential(_smtpEmailSenderSettings.CredentialAddress, _smtpEmailSenderSettings.Password);
