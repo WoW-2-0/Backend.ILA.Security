@@ -2,5 +2,5 @@
 
 public interface IModificationAuditableEntity
 {
-    Guid? ModifiedBy { get; set; }
+    Guid? ModifiedByUserId { get; set; }
 }

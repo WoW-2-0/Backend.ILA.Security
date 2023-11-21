@@ -12,7 +12,7 @@ using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 namespace LocalIdentity.SimpleInfra.Persistence.Migrations
 {
     [DbContext(typeof(IdentityDbContext))]
-    [Migration("20231120110420_AddRoleAndUserRelation")]
+    [Migration("20231121142611_AddRoleAndUserRelation")]
     partial class AddRoleAndUserRelation
     {
         /// <inheritdoc />
@@ -34,7 +34,7 @@ namespace LocalIdentity.SimpleInfra.Persistence.Migrations
                     b.Property<DateTimeOffset>("CreatedTime")
                         .HasColumnType("timestamp with time zone");
 
-                    b.Property<DateTimeOffset?>("DeletedDate")
+                    b.Property<DateTimeOffset?>("DeletedTime")
                         .HasColumnType("timestamp with time zone");
 
                     b.Property<bool>("IsActive")
@@ -56,19 +56,27 @@ namespace LocalIdentity.SimpleInfra.Persistence.Migrations
                     b.HasData(
                         new
                         {
-                            Id = new Guid("d0b0d6c0-2b7a-4b1a-9f1a-0b9b6a9a5b1a"),
-                            CreatedTime = new DateTimeOffset(new DateTime(2023, 11, 20, 16, 4, 19, 843, DateTimeKind.Unspecified).AddTicks(5091), new TimeSpan(0, 5, 0, 0, 0)),
+                            Id = new Guid("0327f1ba-81cf-478f-98d4-04fec56fc10a"),
+                            CreatedTime = new DateTimeOffset(new DateTime(2023, 11, 21, 19, 26, 11, 127, DateTimeKind.Unspecified).AddTicks(6209), new TimeSpan(0, 5, 0, 0, 0)),
                             IsActive = true,
                             IsDeleted = false,
                             Type = 0
                         },
                         new
                         {
-                            Id = new Guid("d0b0d6c0-2b7a-4b1a-9f1a-0b9b6a9a5b1b"),
-                            CreatedTime = new DateTimeOffset(new DateTime(2023, 11, 20, 16, 4, 19, 843, DateTimeKind.Unspecified).AddTicks(5124), new TimeSpan(0, 5, 0, 0, 0)),
+                            Id = new Guid("d0b0d6c0-2b7a-4b1a-9f1a-0b9b6a9a5b1a"),
+                            CreatedTime = new DateTimeOffset(new DateTime(2023, 11, 21, 19, 26, 11, 127, DateTimeKind.Unspecified).AddTicks(6239), new TimeSpan(0, 5, 0, 0, 0)),
                             IsActive = true,
                             IsDeleted = false,
                             Type = 1
+                        },
+                        new
+                        {
+                            Id = new Guid("d0b0d6c0-2b7a-4b1a-9f1a-0b9b6a9a5b1b"),
+                            CreatedTime = new DateTimeOffset(new DateTime(2023, 11, 21, 19, 26, 11, 127, DateTimeKind.Unspecified).AddTicks(6241), new TimeSpan(0, 5, 0, 0, 0)),
+                            IsActive = true,
+                            IsDeleted = false,
+                            Type = 2
                         });
                 });
 
@@ -84,10 +92,10 @@ namespace LocalIdentity.SimpleInfra.Persistence.Migrations
                     b.Property<DateTimeOffset>("CreatedTime")
                         .HasColumnType("timestamp with time zone");
 
-                    b.Property<Guid?>("DeletedBy")
+                    b.Property<Guid?>("DeletedByUserId")
                         .HasColumnType("uuid");
 
-                    b.Property<DateTimeOffset?>("DeletedDate")
+                    b.Property<DateTimeOffset?>("DeletedTime")
                         .HasColumnType("timestamp with time zone");
 
                     b.Property<string>("EmailAddress")
@@ -111,7 +119,7 @@ namespace LocalIdentity.SimpleInfra.Persistence.Migrations
                         .HasMaxLength(64)
                         .HasColumnType("character varying(64)");
 
-                    b.Property<Guid?>("ModifiedBy")
+                    b.Property<Guid?>("ModifiedByUserId")
                         .HasColumnType("uuid");
 
                     b.Property<DateTimeOffset?>("ModifiedTime")
@@ -126,6 +134,9 @@ namespace LocalIdentity.SimpleInfra.Persistence.Migrations
                         .HasColumnType("uuid");
 
                     b.HasKey("Id");
+
+                    b.HasIndex("EmailAddress")
+                        .IsUnique();
 
                     b.HasIndex("RoleId");
 

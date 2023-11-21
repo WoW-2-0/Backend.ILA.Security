@@ -1,4 +1,5 @@
-﻿using LocalIdentity.SimpleInfra.Domain.Common;
+﻿using System.ComponentModel.DataAnnotations.Schema;
+using LocalIdentity.SimpleInfra.Domain.Common;
 using LocalIdentity.SimpleInfra.Domain.Common.Entities;
 
 namespace LocalIdentity.SimpleInfra.Domain.Entities;
@@ -17,9 +18,9 @@ public class User : AuditableEntity, IDeletionAuditableEntity, IModificationAudi
     
     public bool IsEmailAddressVerified { get; set; }
     
-    public Guid? DeletedBy { get; set; }
+    public Guid? DeletedByUserId { get; set; }
     
-    public Guid? ModifiedBy { get; set; }
+    public Guid? ModifiedByUserId { get; set; }
     
     public Guid RoleId { get; set; }
 

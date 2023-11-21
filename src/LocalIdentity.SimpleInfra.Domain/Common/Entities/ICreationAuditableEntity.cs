@@ -2,5 +2,5 @@
 
 public interface ICreationAuditableEntity
 {
-    Guid CreatedBy { get; set; }
+    Guid CreatedByUserId { get; set; }
 }

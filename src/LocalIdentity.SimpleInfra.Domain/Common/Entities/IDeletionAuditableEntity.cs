@@ -2,5 +2,5 @@
 
 public interface IDeletionAuditableEntity
 {
-    Guid? DeletedBy { get; set; }
+    Guid? DeletedByUserId { get; set; }
 }

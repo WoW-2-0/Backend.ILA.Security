@@ -12,7 +12,7 @@ using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 namespace LocalIdentity.SimpleInfra.Persistence.Migrations
 {
     [DbContext(typeof(IdentityDbContext))]
-    [Migration("20231117122543_AddUser")]
+    [Migration("20231121142039_AddUser")]
     partial class AddUser
     {
         /// <inheritdoc />
@@ -37,10 +37,10 @@ namespace LocalIdentity.SimpleInfra.Persistence.Migrations
                     b.Property<DateTimeOffset>("CreatedTime")
                         .HasColumnType("timestamp with time zone");
 
-                    b.Property<Guid?>("DeletedBy")
+                    b.Property<Guid?>("DeletedByUserId")
                         .HasColumnType("uuid");
 
-                    b.Property<DateTimeOffset?>("DeletedDate")
+                    b.Property<DateTimeOffset?>("DeletedTime")
                         .HasColumnType("timestamp with time zone");
 
                     b.Property<string>("EmailAddress")
@@ -64,7 +64,7 @@ namespace LocalIdentity.SimpleInfra.Persistence.Migrations
                         .HasMaxLength(64)
                         .HasColumnType("character varying(64)");
 
-                    b.Property<Guid?>("ModifiedBy")
+                    b.Property<Guid?>("ModifiedByUserId")
                         .HasColumnType("uuid");
 
                     b.Property<DateTimeOffset?>("ModifiedTime")
@@ -75,7 +75,13 @@ namespace LocalIdentity.SimpleInfra.Persistence.Migrations
                         .HasMaxLength(256)
                         .HasColumnType("character varying(256)");
 
+                    b.Property<Guid>("RoleId")
+                        .HasColumnType("uuid");
+
                     b.HasKey("Id");
+
+                    b.HasIndex("EmailAddress")
+                        .IsUnique();
 
                     b.ToTable("Users");
                 });

@@ -13,13 +13,6 @@ namespace LocalIdentity.SimpleInfra.Persistence.Migrations
         /// <inheritdoc />
         protected override void Up(MigrationBuilder migrationBuilder)
         {
-            migrationBuilder.AddColumn<Guid>(
-                name: "RoleId",
-                table: "Users",
-                type: "uuid",
-                nullable: false,
-                defaultValue: new Guid("00000000-0000-0000-0000-000000000000"));
-
             migrationBuilder.CreateTable(
                 name: "Roles",
                 columns: table => new
@@ -28,7 +21,7 @@ namespace LocalIdentity.SimpleInfra.Persistence.Migrations
                     Type = table.Column<int>(type: "integer", nullable: false),
                     IsActive = table.Column<bool>(type: "boolean", nullable: false),
                     IsDeleted = table.Column<bool>(type: "boolean", nullable: false),
-                    DeletedDate = table.Column<DateTimeOffset>(type: "timestamp with time zone", nullable: true),
+                    DeletedTime = table.Column<DateTimeOffset>(type: "timestamp with time zone", nullable: true),
                     CreatedTime = table.Column<DateTimeOffset>(type: "timestamp with time zone", nullable: false),
                     ModifiedTime = table.Column<DateTimeOffset>(type: "timestamp with time zone", nullable: true)
                 },
@@ -39,11 +32,12 @@ namespace LocalIdentity.SimpleInfra.Persistence.Migrations
 
             migrationBuilder.InsertData(
                 table: "Roles",
-                columns: new[] { "Id", "CreatedTime", "DeletedDate", "IsActive", "IsDeleted", "ModifiedTime", "Type" },
+                columns: new[] { "Id", "CreatedTime", "DeletedTime", "IsActive", "IsDeleted", "ModifiedTime", "Type" },
                 values: new object[,]
                 {
-                    { new Guid("d0b0d6c0-2b7a-4b1a-9f1a-0b9b6a9a5b1a"), new DateTimeOffset(new DateTime(2023, 11, 20, 16, 4, 19, 843, DateTimeKind.Unspecified).AddTicks(5091), new TimeSpan(0, 5, 0, 0, 0)), null, true, false, null, 0 },
-                    { new Guid("d0b0d6c0-2b7a-4b1a-9f1a-0b9b6a9a5b1b"), new DateTimeOffset(new DateTime(2023, 11, 20, 16, 4, 19, 843, DateTimeKind.Unspecified).AddTicks(5124), new TimeSpan(0, 5, 0, 0, 0)), null, true, false, null, 1 }
+                    { new Guid("0327f1ba-81cf-478f-98d4-04fec56fc10a"), new DateTimeOffset(new DateTime(2023, 11, 21, 19, 26, 11, 127, DateTimeKind.Unspecified).AddTicks(6209), new TimeSpan(0, 5, 0, 0, 0)), null, true, false, null, 0 },
+                    { new Guid("d0b0d6c0-2b7a-4b1a-9f1a-0b9b6a9a5b1a"), new DateTimeOffset(new DateTime(2023, 11, 21, 19, 26, 11, 127, DateTimeKind.Unspecified).AddTicks(6239), new TimeSpan(0, 5, 0, 0, 0)), null, true, false, null, 1 },
+                    { new Guid("d0b0d6c0-2b7a-4b1a-9f1a-0b9b6a9a5b1b"), new DateTimeOffset(new DateTime(2023, 11, 21, 19, 26, 11, 127, DateTimeKind.Unspecified).AddTicks(6241), new TimeSpan(0, 5, 0, 0, 0)), null, true, false, null, 2 }
                 });
 
             migrationBuilder.CreateIndex(
@@ -72,10 +66,6 @@ namespace LocalIdentity.SimpleInfra.Persistence.Migrations
 
             migrationBuilder.DropIndex(
                 name: "IX_Users_RoleId",
-                table: "Users");
-
-            migrationBuilder.DropColumn(
-                name: "RoleId",
                 table: "Users");
         }
     }
