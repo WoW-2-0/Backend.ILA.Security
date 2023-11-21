@@ -1,4 +1,5 @@
 ﻿using LocalIdentity.SimpleInfra.Domain.Common;
+using LocalIdentity.SimpleInfra.Domain.Common.Entities;
 using LocalIdentity.SimpleInfra.Domain.Enums;
 
 namespace LocalIdentity.SimpleInfra.Domain.Entities;

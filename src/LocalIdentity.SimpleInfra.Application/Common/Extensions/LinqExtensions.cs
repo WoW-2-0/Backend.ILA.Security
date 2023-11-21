@@ -1,6 +1,6 @@
 using LocalIdentity.SimpleInfra.Application.Common.Querying;
 
-namespace LocalIdentity.SimpleInfra.Domain.Extensions;
+namespace LocalIdentity.SimpleInfra.Application.Common.Extensions;
 
 public static class LinqExtensions
 {

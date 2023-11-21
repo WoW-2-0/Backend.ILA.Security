@@ -7,7 +7,7 @@ namespace LocalIdentity.SimpleInfra.Application.Common.Identity.Services;
 public interface IRoleService
 {
     ValueTask<IList<Role>> GetByFilterAsync(
-        FilterPagination filterPagination,
+        FilterPagination filterOptions,
         bool asNoTracking = false,
         CancellationToken cancellationToken = default
     );

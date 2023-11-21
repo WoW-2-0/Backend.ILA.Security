@@ -1,7 +1,9 @@
 ﻿using System.Reflection;
 using FluentValidation;
 using LocalIdentity.SimpleInfra.Application.Common.Identity.Services;
+using LocalIdentity.SimpleInfra.Application.Common.Notfications.Services;
 using LocalIdentity.SimpleInfra.Infrastructure.Common.Identity.Services;
+using LocalIdentity.SimpleInfra.Infrastructure.Common.Notifications;
 using LocalIdentity.SimpleInfra.Infrastructure.Common.Settings;
 using LocalIdentity.SimpleInfra.Persistence.DataContexts;
 using LocalIdentity.SimpleInfra.Persistence.Repositories;
@@ -27,29 +29,36 @@ public static partial class HostConfiguration
         return builder;
     }
 
+    private static WebApplicationBuilder AddNotificationInfrastructure(this WebApplicationBuilder builder)
+    {
+        // register configurations 
+        builder.Services.Configure<SmtpEmailSenderSettings>(builder.Configuration.GetSection(nameof(SmtpEmailSenderSettings)));
+
+        // register orchestration and aggregation services
+        builder.Services.AddScoped<IEmailOrchestrationService, EmailOrchestrationService>();
+
+        return builder;
+    }
+
     private static WebApplicationBuilder AddIdentityInfrastructure(this WebApplicationBuilder builder)
     {
         // register configurations
         builder.Services.Configure<PasswordValidationSettings>(builder.Configuration.GetSection(nameof(PasswordValidationSettings)));
 
         // register db contexts
-        builder.Services.AddDbContext<IdentityDbContext>(options => 
-            options.UseNpgsql(builder.Configuration.GetConnectionString("DefaultConnection")));
+        builder.Services.AddDbContext<IdentityDbContext>(
+            options => options.UseNpgsql(builder.Configuration.GetConnectionString("DefaultConnection"))
+        );
 
         // register repositories
-        builder.Services
-            .AddScoped<IUserRepository, UserRepository>()
-            .AddScoped<IRoleRepository, RoleRepository>();
+        builder.Services.AddScoped<IUserRepository, UserRepository>().AddScoped<IRoleRepository, RoleRepository>();
 
         // register helper foundation services
-        builder.Services
-            .AddTransient<IPasswordHasherService, PasswordHasherService>()
+        builder.Services.AddTransient<IPasswordHasherService, PasswordHasherService>()
             .AddTransient<IPasswordGeneratorService, PasswordGeneratorService>();
 
         // register foundation data access services
-        builder.Services
-            .AddScoped<IUserService, UserService>()
-            .AddScoped<IRoleService, RoleService>();
+        builder.Services.AddScoped<IUserService, UserService>().AddScoped<IRoleService, RoleService>();
 
         // register other services
 

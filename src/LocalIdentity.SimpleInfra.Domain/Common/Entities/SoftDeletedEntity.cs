@@ -1,4 +1,4 @@
-﻿namespace LocalIdentity.SimpleInfra.Domain.Common;
+﻿namespace LocalIdentity.SimpleInfra.Domain.Common.Entities;
 
 public abstract class SoftDeletedEntity : Entity, ISoftDeletedEntity
 {

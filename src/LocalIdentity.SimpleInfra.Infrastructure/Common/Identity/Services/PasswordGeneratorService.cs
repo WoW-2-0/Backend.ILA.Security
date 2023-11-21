@@ -84,10 +84,10 @@ public class PasswordGeneratorService(
     {
         return passwordElementType switch
         {
-            PasswordElementType.Digit => ValidationExtensions.GetRandomDigit(_random),
-            PasswordElementType.Uppercase => ValidationExtensions.GetRandomUppercase(_random),
-            PasswordElementType.Lowercase => ValidationExtensions.GetRandomLowercase(_random),
-            PasswordElementType.NonAlphanumeric => ValidationExtensions.GetRandomNonAlphanumeric(_random),
+            PasswordElementType.Digit => CharExtensions.GetRandomDigit(_random),
+            PasswordElementType.Uppercase => CharExtensions.GetRandomUppercase(_random),
+            PasswordElementType.Lowercase => CharExtensions.GetRandomLowercase(_random),
+            PasswordElementType.NonAlphanumeric => CharExtensions.GetRandomNonAlphanumeric(_random),
             _ => throw new ArgumentOutOfRangeException(nameof(passwordElementType), passwordElementType, null)
         };
     }

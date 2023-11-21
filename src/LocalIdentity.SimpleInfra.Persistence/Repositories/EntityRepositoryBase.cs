@@ -1,5 +1,6 @@
 using System.Linq.Expressions;
 using LocalIdentity.SimpleInfra.Domain.Common;
+using LocalIdentity.SimpleInfra.Domain.Common.Entities;
 using Microsoft.EntityFrameworkCore;
 
 namespace LocalIdentity.SimpleInfra.Persistence.Repositories;
