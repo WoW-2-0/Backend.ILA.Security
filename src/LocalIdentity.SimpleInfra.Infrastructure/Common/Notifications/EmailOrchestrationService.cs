@@ -8,6 +8,7 @@ using LocalIdentity.SimpleInfra.Application.Common.Notfications.Services;
 using LocalIdentity.SimpleInfra.Domain.Common.Exceptions;
 using LocalIdentity.SimpleInfra.Domain.Enums;
 using LocalIdentity.SimpleInfra.Domain.Exceptions;
+using LocalIdentity.SimpleInfra.Domain.Extensions;
 using LocalIdentity.SimpleInfra.Infrastructure.Common.Settings;
 using Microsoft.Extensions.Options;
 

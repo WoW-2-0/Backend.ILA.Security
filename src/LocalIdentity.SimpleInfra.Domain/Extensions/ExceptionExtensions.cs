@@ -1,6 +1,6 @@
 ﻿using LocalIdentity.SimpleInfra.Domain.Common.Exceptions;
 
-namespace LocalIdentity.SimpleInfra.Domain.Exceptions;
+namespace LocalIdentity.SimpleInfra.Domain.Extensions;
 
 public static class ExceptionExtensions
 {

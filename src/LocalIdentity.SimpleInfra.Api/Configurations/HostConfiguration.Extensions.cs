@@ -1,5 +1,7 @@
 ﻿using System.Reflection;
 using FluentValidation;
+using FluentValidation.AspNetCore;
+using LocalIdentity.SimpleInfra.Api.Data;
 using LocalIdentity.SimpleInfra.Application.Common.Identity.Services;
 using LocalIdentity.SimpleInfra.Application.Common.Notfications.Services;
 using LocalIdentity.SimpleInfra.Infrastructure.Common.Identity.Services;
@@ -24,7 +26,19 @@ public static partial class HostConfiguration
 
     private static WebApplicationBuilder AddValidators(this WebApplicationBuilder builder)
     {
+        // register configurations 
+        builder.Services.Configure<ValidationSettings>(builder.Configuration.GetSection(nameof(ValidationSettings)));
+
+        // register fluent validation
         builder.Services.AddValidatorsFromAssemblies(Assemblies);
+
+        return builder;
+    }
+
+    private static WebApplicationBuilder AddMappers(this WebApplicationBuilder builder)
+    {
+        // register automapper
+        builder.Services.AddAutoMapper(Assemblies);
 
         return builder;
     }
@@ -51,17 +65,24 @@ public static partial class HostConfiguration
         );
 
         // register repositories
-        builder.Services.AddScoped<IUserRepository, UserRepository>().AddScoped<IRoleRepository, RoleRepository>();
+        builder.Services
+            .AddScoped<IUserRepository, UserRepository>()
+            .AddScoped<IRoleRepository, RoleRepository>();
 
         // register helper foundation services
-        builder.Services.AddTransient<IPasswordHasherService, PasswordHasherService>()
+        builder.Services
+            .AddTransient<IPasswordHasherService, PasswordHasherService>()
             .AddTransient<IPasswordGeneratorService, PasswordGeneratorService>();
 
         // register foundation data access services
-        builder.Services.AddScoped<IUserService, UserService>().AddScoped<IRoleService, RoleService>();
+        builder.Services
+            .AddScoped<IUserService, UserService>()
+            .AddScoped<IRoleService, RoleService>();
 
         // register aggregator and orchestrator services
-        builder.Services.AddScoped<IAccountAggregatorService, AccountAggregatorService>();
+        builder.Services
+            .AddScoped<IAccountAggregatorService, AccountAggregatorService>()
+            .AddScoped<IAuthAggregationService, AuthAggregationService>();
 
         return builder;
     }
@@ -70,8 +91,17 @@ public static partial class HostConfiguration
     {
         builder.Services.AddRouting(options => options.LowercaseUrls = true);
         builder.Services.AddControllers();
+        builder.Services.AddFluentValidationAutoValidation();
 
         return builder;
+    }
+    
+    private static async ValueTask<WebApplication> SeedDataAsync(this WebApplication app)
+    {
+        var serviceScope = app.Services.CreateScope();
+        await serviceScope.ServiceProvider.InitializeSeedAsync();
+
+        return app;
     }
 
     private static WebApplication UseExposers(this WebApplication app)

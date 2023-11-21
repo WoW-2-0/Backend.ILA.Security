@@ -1,6 +1,7 @@
 ﻿using System.Linq.Expressions;
 using LocalIdentity.SimpleInfra.Application.Common.Identity.Services;
 using LocalIdentity.SimpleInfra.Domain.Entities;
+using LocalIdentity.SimpleInfra.Domain.Enums;
 using LocalIdentity.SimpleInfra.Persistence.Repositories.Interfaces;
 using Microsoft.EntityFrameworkCore;
 
@@ -18,6 +19,13 @@ public class UserService(IUserRepository userRepository) : IUserService
         return userRepository.GetByIdAsync(userId, asNoTracking, cancellationToken);
     }
 
+    public async ValueTask<User> GetSystemUserAsync(bool asNoTracking = false, CancellationToken cancellationToken = default)
+    {
+        return await userRepository.Get(user => user.Role!.Type == RoleType.Admin, asNoTracking)
+            .Include(user => user.Role)
+            .FirstAsync(cancellationToken);
+    }
+
     public async ValueTask<User?> GetByEmailAddressAsync(
         string emailAddress,
         bool asNoTracking = false,
@@ -25,12 +33,13 @@ public class UserService(IUserRepository userRepository) : IUserService
     )
     {
         return await userRepository.Get(asNoTracking: asNoTracking)
-            .SingleOrDefaultAsync(user => user.EmailAddress == emailAddress, cancellationToken: cancellationToken);
+            .FirstOrDefaultAsync(user => user.EmailAddress == emailAddress, cancellationToken: cancellationToken);
     }
 
-    public async Task<Guid?> CheckUserByEmailAddressAsync(string emailAddress, CancellationToken cancellationToken = default)
+    public async Task<Guid?> GetIdByEmailAddressAsync(string emailAddress, CancellationToken cancellationToken = default)
     {
-        return await Get(user => user.EmailAddress == emailAddress, true).Select(user => user.Id).SingleOrDefaultAsync(cancellationToken);
+        var userId = await Get(user => user.EmailAddress == emailAddress, true).Select(user => user.Id).FirstOrDefaultAsync(cancellationToken);
+        return userId != Guid.Empty ? userId : default(Guid?);
     }
 
     public ValueTask<User> CreateAsync(User user, bool saveChanges = true, CancellationToken cancellationToken = default)

@@ -50,9 +50,6 @@ public abstract class EntityRepositoryBase<TEntity, TContext>(TContext dbContext
 
     protected async ValueTask<TEntity> CreateAsync(TEntity entity, bool saveChanges = true, CancellationToken cancellationToken = default)
     {
-        if (entity is AuditableEntity auditableEntity)
-            auditableEntity.CreatedTime = DateTimeOffset.Now;
-
         await DbContext.Set<TEntity>().AddAsync(entity, cancellationToken);
 
         if (saveChanges)

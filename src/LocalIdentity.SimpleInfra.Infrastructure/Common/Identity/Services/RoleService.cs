@@ -24,4 +24,12 @@ public class RoleService(IRoleRepository roleRepository) : IRoleService
     {
         return await roleRepository.Get(role => role.Type == roleType, asNoTracking: asNoTracking).FirstOrDefaultAsync(cancellationToken);
     }
+
+    public async ValueTask<Guid> GetDefaultRoleId(CancellationToken cancellationToken = default)
+    {
+        var roleId = await roleRepository.Get(role => role.Type == RoleType.User, true)
+            .Select(role => role.Id)
+            .FirstOrDefaultAsync(cancellationToken);
+        return roleId != Guid.Empty ? roleId : throw new InvalidOperationException();
+    }
 }
