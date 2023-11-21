@@ -60,7 +60,8 @@ public static partial class HostConfiguration
         // register foundation data access services
         builder.Services.AddScoped<IUserService, UserService>().AddScoped<IRoleService, RoleService>();
 
-        // register other services
+        // register aggregator and orchestrator services
+        builder.Services.AddScoped<IAccountAggregatorService, AccountAggregatorService>();
 
         return builder;
     }

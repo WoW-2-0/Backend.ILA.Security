@@ -47,7 +47,7 @@ public class EmailOrchestrationService(IOptions<SmtpEmailSenderSettings> smtpSen
         {
             NotificationTemplateType.WelcomeNotification => ("Welcome :)", "Welcome to the system, {{UserName}}"),
             NotificationTemplateType.EmailAddressVerificationNotification => ("Verify your email address",
-                "Verify your email by clicking the link, {{VerificationLink}}"),
+                "Verify your email by clicking the link, {{EmailAddressVerificationLink}}"),
             _ => throw new ArgumentOutOfRangeException(nameof(templateType), "")
         };
 
