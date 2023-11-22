@@ -3,15 +3,13 @@ using Microsoft.EntityFrameworkCore;
 
 namespace LocalIdentity.SimpleInfra.Persistence.DataContexts;
 
-public class IdentityDbContext : DbContext
+public class IdentityDbContext(DbContextOptions<IdentityDbContext> options) : DbContext(options)
 {
     public DbSet<User> Users => Set<User>();
-    
+
     public DbSet<Role> Roles => Set<Role>();
-    
-    public IdentityDbContext(DbContextOptions<IdentityDbContext> options) : base(options)
-    {
-    }
+
+    public DbSet<UserInfoVerificationCode> UserInfoVerificationCodes => Set<UserInfoVerificationCode>();
 
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {

@@ -4,7 +4,7 @@ namespace LocalIdentity.SimpleInfra.Application.Common.Notfications.Models;
 
 public class NotificationRequest
 {
-    public Guid? SenderUserId { get; set; } = null;
+    public Guid? SenderUserId { get; set; }
     
     public Guid ReceiverUserId { get; set; }
 

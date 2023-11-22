@@ -1,4 +1,4 @@
-using System.Reflection;
+﻿using System.Reflection;
 using FluentValidation;
 using FluentValidation.AspNetCore;
 using LocalIdentity.SimpleInfra.Api.Data;
@@ -107,6 +107,23 @@ public static partial class HostConfiguration
         // register other higher services
         builder.Services.AddScoped<IAccountAggregatorService, AccountAggregatorService>()
             .AddScoped<IAuthAggregationService, AuthAggregationService>();
+
+        return builder;
+    }
+
+    private static WebApplicationBuilder AddVerificationInfrastructure(this WebApplicationBuilder builder)
+    {
+        // register configurations
+        builder.Services.Configure<VerificationSettings>(builder.Configuration.GetSection(nameof(VerificationSettings)));
+
+        // register repositories
+        builder.Services.AddScoped<IUserInfoVerificationCodeRepository, UserInfoVerificationCodeRepository>();
+
+        // register foundation data access services
+        builder.Services.AddScoped<IUserInfoVerificationCodeService, UserInfoVerificationCodeService>();
+
+        // register other higher services
+        builder.Services.AddScoped<IVerificationProcessingService, VerificationProcessingService>();
 
         return builder;
     }
