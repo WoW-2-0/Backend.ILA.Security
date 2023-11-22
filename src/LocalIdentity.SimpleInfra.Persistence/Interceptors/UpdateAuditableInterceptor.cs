@@ -1,4 +1,4 @@
-﻿using LocalIdentity.SimpleInfra.Domain.Brokers.Interfaces;
+﻿using LocalIdentity.SimpleInfra.Domain.Brokers;
 using LocalIdentity.SimpleInfra.Domain.Common.Entities;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Diagnostics;
@@ -33,7 +33,7 @@ public class UpdateAuditableInterceptor(IRequestUserContextProvider requestUserC
             entry =>
             {
                 if (entry.State == EntityState.Added)
-                    entry.Property(nameof(ICreationAuditableEntity.CreatedByUserId)).CurrentValue = requestUserContextProvider.GetUserId();
+                    entry.Property(nameof(ICreationAuditableEntity.CreatedByUserId)).CurrentValue = requestUserContextProvider.GetUserIdAsync();
             }
         );
 
@@ -41,7 +41,7 @@ public class UpdateAuditableInterceptor(IRequestUserContextProvider requestUserC
             entry =>
             {
                 if (entry.State == EntityState.Modified)
-                    entry.Property(nameof(IModificationAuditableEntity.ModifiedByUserId)).CurrentValue = requestUserContextProvider.GetUserId();
+                    entry.Property(nameof(IModificationAuditableEntity.ModifiedByUserId)).CurrentValue = requestUserContextProvider.GetUserIdAsync();
             }
         );
 
@@ -49,7 +49,7 @@ public class UpdateAuditableInterceptor(IRequestUserContextProvider requestUserC
             entry =>
             {
                 if (entry.State == EntityState.Deleted)
-                    entry.Property(nameof(IDeletionAuditableEntity.DeletedByUserId)).CurrentValue = requestUserContextProvider.GetUserId();
+                    entry.Property(nameof(IDeletionAuditableEntity.DeletedByUserId)).CurrentValue = requestUserContextProvider.GetUserIdAsync();
             }
         );
 

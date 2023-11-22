@@ -24,6 +24,7 @@ public static class SeedDataExtensions
         await identityDbContext.Users.AddAsync(
             new User
             {
+                Id = Guid.Parse("B852F637-1779-48FE-9ADD-EA6BCE4068DE"),
                 FirstName = "System",
                 LastName = string.Empty,
                 Age = 0,

@@ -1,16 +1,17 @@
-﻿using System.Reflection;
+using System.Reflection;
 using FluentValidation;
 using FluentValidation.AspNetCore;
 using LocalIdentity.SimpleInfra.Api.Data;
 using LocalIdentity.SimpleInfra.Application.Common.Identity.Services;
 using LocalIdentity.SimpleInfra.Application.Common.Notfications.Services;
 using LocalIdentity.SimpleInfra.Application.Common.RequestContexts.Brokers;
+using LocalIdentity.SimpleInfra.Application.Common.Verifications.Services;
 using LocalIdentity.SimpleInfra.Domain.Brokers;
-using LocalIdentity.SimpleInfra.Domain.Brokers.Interfaces;
 using LocalIdentity.SimpleInfra.Infrastructure.Common.Identity.Services;
 using LocalIdentity.SimpleInfra.Infrastructure.Common.Notifications;
 using LocalIdentity.SimpleInfra.Infrastructure.Common.RequestContexts.Brokers;
 using LocalIdentity.SimpleInfra.Infrastructure.Common.Settings;
+using LocalIdentity.SimpleInfra.Infrastructure.Common.Verifications.Services;
 using LocalIdentity.SimpleInfra.Persistence.DataContexts;
 using LocalIdentity.SimpleInfra.Persistence.Interceptors;
 using LocalIdentity.SimpleInfra.Persistence.Repositories;
@@ -50,19 +51,17 @@ public static partial class HostConfiguration
 
     private static WebApplicationBuilder AddRequestContextTools(this WebApplicationBuilder builder)
     {
+        builder.Services.Configure<RequestUserContextSettings>(builder.Configuration.GetSection(nameof(RequestUserContextSettings)));
         builder.Services.AddHttpContextAccessor();
-        builder.Services
-            .AddScoped<IRequestUserContextProvider, RequestUserContextProvider>()
+        builder.Services.AddScoped<IRequestUserContextProvider, RequestUserContextProvider>()
             .AddScoped<IRequestContextProvider, RequestContextProvider>();
 
         return builder;
     }
-    
+
     private static WebApplicationBuilder AddPersistence(this WebApplicationBuilder builder)
     {
-        builder.Services
-            .AddScoped<UpdateAuditableInterceptor>()
-            .AddScoped<UpdateSoftDeletedInterceptor>();
+        builder.Services.AddScoped<UpdateAuditableInterceptor>().AddScoped<UpdateSoftDeletedInterceptor>();
 
         return builder;
     }
@@ -72,7 +71,7 @@ public static partial class HostConfiguration
         // register configurations 
         builder.Services.Configure<SmtpEmailSenderSettings>(builder.Configuration.GetSection(nameof(SmtpEmailSenderSettings)));
 
-        // register orchestration and aggregation services
+        // register other higher services
         builder.Services.AddScoped<IEmailOrchestrationService, EmailOrchestrationService>();
 
         return builder;
@@ -105,7 +104,7 @@ public static partial class HostConfiguration
         // register foundation data access services
         builder.Services.AddScoped<IUserService, UserService>().AddScoped<IRoleService, RoleService>();
 
-        // register aggregator and orchestrator services
+        // register other higher services
         builder.Services.AddScoped<IAccountAggregatorService, AccountAggregatorService>()
             .AddScoped<IAuthAggregationService, AuthAggregationService>();
 
