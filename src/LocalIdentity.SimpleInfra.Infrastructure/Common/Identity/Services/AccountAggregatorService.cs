@@ -1,13 +1,18 @@
 ﻿using LocalIdentity.SimpleInfra.Application.Common.Identity.Services;
 using LocalIdentity.SimpleInfra.Application.Common.Notfications.Models;
 using LocalIdentity.SimpleInfra.Application.Common.Notfications.Services;
+using LocalIdentity.SimpleInfra.Application.Common.Verifications.Services;
 using LocalIdentity.SimpleInfra.Domain.Constants;
 using LocalIdentity.SimpleInfra.Domain.Entities;
 using LocalIdentity.SimpleInfra.Domain.Enums;
 
 namespace LocalIdentity.SimpleInfra.Infrastructure.Common.Identity.Services;
 
-public class AccountAggregatorService(IUserService userService, IEmailOrchestrationService emailOrchestrationService) : IAccountAggregatorService
+public class AccountAggregatorService(
+    IUserService userService,
+    IUserInfoVerificationCodeService userInfoVerificationCodeService,
+    IEmailOrchestrationService emailOrchestrationService
+) : IAccountAggregatorService
 {
     public async ValueTask<bool> CreateUserAsync(User user, CancellationToken cancellationToken = default)
     {
@@ -31,6 +36,25 @@ public class AccountAggregatorService(IUserService userService, IEmailOrchestrat
         );
 
         // send verification email
+        var verificationCode = await userInfoVerificationCodeService.CreateAsync(
+            VerificationCodeType.EmailAddressVerification,
+            createdUser.Id,
+            cancellationToken
+        );
+
+        await emailOrchestrationService.SendAsync(
+            new EmailNotificationRequest
+            {
+                SenderUserId = systemUser.Id,
+                ReceiverUserId = createdUser.Id,
+                TemplateType = NotificationTemplateType.EmailAddressVerificationNotification,
+                Variables = new Dictionary<string, string>
+                {
+                    { NotificationTemplateConstants.EmailAddressVerificationLinkPlaceholder, verificationCode.VerificationLink }
+                }
+            },
+            cancellationToken
+        );
 
         return true;
     }

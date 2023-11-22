@@ -3,6 +3,7 @@ using System;
 using LocalIdentity.SimpleInfra.Persistence.DataContexts;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 
@@ -11,9 +12,11 @@ using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 namespace LocalIdentity.SimpleInfra.Persistence.Migrations
 {
     [DbContext(typeof(IdentityDbContext))]
-    partial class IdentityDbContextModelSnapshot : ModelSnapshot
+    [Migration("20231121192126_AddVerificationCodeAndMutualRelation")]
+    partial class AddVerificationCodeAndMutualRelation
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -54,7 +57,7 @@ namespace LocalIdentity.SimpleInfra.Persistence.Migrations
                         new
                         {
                             Id = new Guid("0327f1ba-81cf-478f-98d4-04fec56fc10a"),
-                            CreatedTime = new DateTimeOffset(new DateTime(2023, 11, 22, 0, 22, 24, 728, DateTimeKind.Unspecified).AddTicks(3518), new TimeSpan(0, 5, 0, 0, 0)),
+                            CreatedTime = new DateTimeOffset(new DateTime(2023, 11, 22, 0, 21, 26, 31, DateTimeKind.Unspecified).AddTicks(4819), new TimeSpan(0, 5, 0, 0, 0)),
                             IsActive = true,
                             IsDeleted = false,
                             Type = 0
@@ -62,7 +65,7 @@ namespace LocalIdentity.SimpleInfra.Persistence.Migrations
                         new
                         {
                             Id = new Guid("d0b0d6c0-2b7a-4b1a-9f1a-0b9b6a9a5b1a"),
-                            CreatedTime = new DateTimeOffset(new DateTime(2023, 11, 22, 0, 22, 24, 728, DateTimeKind.Unspecified).AddTicks(3550), new TimeSpan(0, 5, 0, 0, 0)),
+                            CreatedTime = new DateTimeOffset(new DateTime(2023, 11, 22, 0, 21, 26, 31, DateTimeKind.Unspecified).AddTicks(4848), new TimeSpan(0, 5, 0, 0, 0)),
                             IsActive = true,
                             IsDeleted = false,
                             Type = 1
@@ -70,7 +73,7 @@ namespace LocalIdentity.SimpleInfra.Persistence.Migrations
                         new
                         {
                             Id = new Guid("d0b0d6c0-2b7a-4b1a-9f1a-0b9b6a9a5b1b"),
-                            CreatedTime = new DateTimeOffset(new DateTime(2023, 11, 22, 0, 22, 24, 728, DateTimeKind.Unspecified).AddTicks(3553), new TimeSpan(0, 5, 0, 0, 0)),
+                            CreatedTime = new DateTimeOffset(new DateTime(2023, 11, 22, 0, 21, 26, 31, DateTimeKind.Unspecified).AddTicks(4850), new TimeSpan(0, 5, 0, 0, 0)),
                             IsActive = true,
                             IsDeleted = false,
                             Type = 2
@@ -184,8 +187,6 @@ namespace LocalIdentity.SimpleInfra.Persistence.Migrations
                     b.Property<Guid>("UserId")
                         .HasColumnType("uuid");
 
-                    b.HasIndex("UserId");
-
                     b.HasDiscriminator().HasValue(0);
                 });
 
@@ -198,15 +199,6 @@ namespace LocalIdentity.SimpleInfra.Persistence.Migrations
                         .IsRequired();
 
                     b.Navigation("Role");
-                });
-
-            modelBuilder.Entity("LocalIdentity.SimpleInfra.Domain.Entities.UserInfoVerificationCode", b =>
-                {
-                    b.HasOne("LocalIdentity.SimpleInfra.Domain.Entities.User", null)
-                        .WithMany()
-                        .HasForeignKey("UserId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
                 });
 #pragma warning restore 612, 618
         }

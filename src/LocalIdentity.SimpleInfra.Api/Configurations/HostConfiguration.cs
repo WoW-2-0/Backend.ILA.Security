@@ -10,6 +10,7 @@ public static partial class HostConfiguration
             .AddRequestContextTools()
             .AddPersistence()
             .AddNotificationInfrastructure()
+            .AddVerificationInfrastructure()
             .AddIdentityInfrastructure()
             .AddExposers();
 

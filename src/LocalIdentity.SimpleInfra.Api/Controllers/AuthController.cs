@@ -1,4 +1,4 @@
-using LocalIdentity.SimpleInfra.Application.Common.Identity.Models;
+﻿using LocalIdentity.SimpleInfra.Application.Common.Identity.Models;
 using LocalIdentity.SimpleInfra.Application.Common.Identity.Services;
 using LocalIdentity.SimpleInfra.Application.Common.Querying;
 using Microsoft.AspNetCore.Mvc;
@@ -17,6 +17,14 @@ public class AuthController(IAuthAggregationService authAggregationService) : Co
         var result = await authAggregationService.SignUpAsync(signUpDetails, cancellationToken);
         return result ? Ok() : BadRequest();
     }
+    
+    // [HttpPost("sign-in")]
+    // public async ValueTask<IActionResult> SignIn([FromBody] SignInDetails signInDetails, CancellationToken cancellationToken)
+    // {
+    //     var result = await authAggregationService.SignInAsync(signInDetails, cancellationToken);
+    //     return Ok(result);
+    // }
+
     #endregion
 
     #region Roles
