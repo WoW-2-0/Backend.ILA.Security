@@ -12,6 +12,9 @@ public class AccessTokenRepository(IdentityDbContext dbContext) : EntityReposito
     public new IQueryable<AccessToken> Get(Expression<Func<AccessToken, bool>>? predicate = default, bool asNoTracking = false) =>
         base.Get(predicate, asNoTracking);
 
+    public new ValueTask<AccessToken?> GetByIdAsync(Guid accessTokenId, bool asNoTracking = false, CancellationToken cancellationToken = default)
+    => base.GetByIdAsync(accessTokenId, asNoTracking, cancellationToken);
+
     public new ValueTask<AccessToken> CreateAsync(AccessToken accessToken, bool saveChanges = true, CancellationToken cancellationToken = default) =>
         base.CreateAsync(accessToken, saveChanges, cancellationToken);
 

@@ -3,6 +3,7 @@ using System.Text;
 using FluentValidation;
 using FluentValidation.AspNetCore;
 using LocalIdentity.SimpleInfra.Api.Data;
+using LocalIdentity.SimpleInfra.Api.Middlewares;
 using LocalIdentity.SimpleInfra.Application.Common.Identity.Services;
 using LocalIdentity.SimpleInfra.Application.Common.Notfications.Services;
 using LocalIdentity.SimpleInfra.Application.Common.RequestContexts.Brokers;
@@ -97,20 +98,17 @@ public static partial class HostConfiguration
         );
 
         // register repositories
-        builder.Services
-            .AddScoped<IUserRepository, UserRepository>()
+        builder.Services.AddScoped<IUserRepository, UserRepository>()
             .AddScoped<IRoleRepository, RoleRepository>()
             .AddScoped<IAccessTokenRepository, AccessTokenRepository>();
 
         // register helper foundation services
-        builder.Services
-            .AddTransient<IPasswordHasherService, PasswordHasherService>()
+        builder.Services.AddTransient<IPasswordHasherService, PasswordHasherService>()
             .AddTransient<IPasswordGeneratorService, PasswordGeneratorService>()
             .AddTransient<IAccessTokenGeneratorService, AccessTokenGeneratorService>();
 
         // register foundation data access services
-        builder.Services
-            .AddScoped<IUserService, UserService>()
+        builder.Services.AddScoped<IUserService, UserService>()
             .AddScoped<IRoleService, RoleService>()
             .AddScoped<IAccessTokenService, AccessTokenService>();
 
@@ -177,11 +175,12 @@ public static partial class HostConfiguration
 
         return app;
     }
-    
+
     private static WebApplication UseIdentityInfrastructure(this WebApplication app)
     {
         app.UseAuthentication();
         app.UseAuthorization();
+        app.UseMiddleware<AccessTokenMiddleware>();
 
         return app;
     }
@@ -192,5 +191,4 @@ public static partial class HostConfiguration
 
         return app;
     }
-    
 }

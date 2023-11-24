@@ -12,7 +12,7 @@ using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 namespace LocalIdentity.SimpleInfra.Persistence.Migrations
 {
     [DbContext(typeof(IdentityDbContext))]
-    [Migration("20231124121335_AddAccessTokenAndUserRelation")]
+    [Migration("20231124133609_AddAccessTokenAndUserRelation")]
     partial class AddAccessTokenAndUserRelation
     {
         /// <inheritdoc />
@@ -51,8 +51,8 @@ namespace LocalIdentity.SimpleInfra.Persistence.Migrations
 
                     b.Property<string>("Token")
                         .IsRequired()
-                        .HasMaxLength(512)
-                        .HasColumnType("character varying(512)");
+                        .HasMaxLength(1024)
+                        .HasColumnType("character varying(1024)");
 
                     b.Property<Guid>("UserId")
                         .HasColumnType("uuid");
@@ -96,7 +96,7 @@ namespace LocalIdentity.SimpleInfra.Persistence.Migrations
                         new
                         {
                             Id = new Guid("0327f1ba-81cf-478f-98d4-04fec56fc10a"),
-                            CreatedTime = new DateTimeOffset(new DateTime(2023, 11, 24, 17, 13, 35, 414, DateTimeKind.Unspecified).AddTicks(7653), new TimeSpan(0, 5, 0, 0, 0)),
+                            CreatedTime = new DateTimeOffset(new DateTime(2023, 11, 24, 18, 36, 8, 933, DateTimeKind.Unspecified).AddTicks(5990), new TimeSpan(0, 5, 0, 0, 0)),
                             IsActive = true,
                             IsDeleted = false,
                             Type = 0
@@ -104,7 +104,7 @@ namespace LocalIdentity.SimpleInfra.Persistence.Migrations
                         new
                         {
                             Id = new Guid("d0b0d6c0-2b7a-4b1a-9f1a-0b9b6a9a5b1a"),
-                            CreatedTime = new DateTimeOffset(new DateTime(2023, 11, 24, 17, 13, 35, 414, DateTimeKind.Unspecified).AddTicks(7685), new TimeSpan(0, 5, 0, 0, 0)),
+                            CreatedTime = new DateTimeOffset(new DateTime(2023, 11, 24, 18, 36, 8, 933, DateTimeKind.Unspecified).AddTicks(6028), new TimeSpan(0, 5, 0, 0, 0)),
                             IsActive = true,
                             IsDeleted = false,
                             Type = 1
@@ -112,7 +112,7 @@ namespace LocalIdentity.SimpleInfra.Persistence.Migrations
                         new
                         {
                             Id = new Guid("d0b0d6c0-2b7a-4b1a-9f1a-0b9b6a9a5b1b"),
-                            CreatedTime = new DateTimeOffset(new DateTime(2023, 11, 24, 17, 13, 35, 414, DateTimeKind.Unspecified).AddTicks(7687), new TimeSpan(0, 5, 0, 0, 0)),
+                            CreatedTime = new DateTimeOffset(new DateTime(2023, 11, 24, 18, 36, 8, 933, DateTimeKind.Unspecified).AddTicks(6031), new TimeSpan(0, 5, 0, 0, 0)),
                             IsActive = true,
                             IsDeleted = false,
                             Type = 2

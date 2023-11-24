@@ -16,7 +16,7 @@ namespace LocalIdentity.SimpleInfra.Persistence.Migrations
                 columns: table => new
                 {
                     Id = table.Column<Guid>(type: "uuid", nullable: false),
-                    Token = table.Column<string>(type: "character varying(512)", maxLength: 512, nullable: false),
+                    Token = table.Column<string>(type: "character varying(1024)", maxLength: 1024, nullable: false),
                     ExpiryTime = table.Column<DateTimeOffset>(type: "timestamp with time zone", nullable: false),
                     IsRevoked = table.Column<bool>(type: "boolean", nullable: false),
                     UserId = table.Column<Guid>(type: "uuid", nullable: false),
@@ -41,21 +41,21 @@ namespace LocalIdentity.SimpleInfra.Persistence.Migrations
                 keyColumn: "Id",
                 keyValue: new Guid("0327f1ba-81cf-478f-98d4-04fec56fc10a"),
                 column: "CreatedTime",
-                value: new DateTimeOffset(new DateTime(2023, 11, 24, 17, 13, 35, 414, DateTimeKind.Unspecified).AddTicks(7653), new TimeSpan(0, 5, 0, 0, 0)));
+                value: new DateTimeOffset(new DateTime(2023, 11, 24, 18, 36, 8, 933, DateTimeKind.Unspecified).AddTicks(5990), new TimeSpan(0, 5, 0, 0, 0)));
 
             migrationBuilder.UpdateData(
                 table: "Roles",
                 keyColumn: "Id",
                 keyValue: new Guid("d0b0d6c0-2b7a-4b1a-9f1a-0b9b6a9a5b1a"),
                 column: "CreatedTime",
-                value: new DateTimeOffset(new DateTime(2023, 11, 24, 17, 13, 35, 414, DateTimeKind.Unspecified).AddTicks(7685), new TimeSpan(0, 5, 0, 0, 0)));
+                value: new DateTimeOffset(new DateTime(2023, 11, 24, 18, 36, 8, 933, DateTimeKind.Unspecified).AddTicks(6028), new TimeSpan(0, 5, 0, 0, 0)));
 
             migrationBuilder.UpdateData(
                 table: "Roles",
                 keyColumn: "Id",
                 keyValue: new Guid("d0b0d6c0-2b7a-4b1a-9f1a-0b9b6a9a5b1b"),
                 column: "CreatedTime",
-                value: new DateTimeOffset(new DateTime(2023, 11, 24, 17, 13, 35, 414, DateTimeKind.Unspecified).AddTicks(7687), new TimeSpan(0, 5, 0, 0, 0)));
+                value: new DateTimeOffset(new DateTime(2023, 11, 24, 18, 36, 8, 933, DateTimeKind.Unspecified).AddTicks(6031), new TimeSpan(0, 5, 0, 0, 0)));
 
             migrationBuilder.CreateIndex(
                 name: "IX_AccessTokens_UserId",

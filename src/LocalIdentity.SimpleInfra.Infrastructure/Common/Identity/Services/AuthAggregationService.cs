@@ -51,10 +51,16 @@ public class AuthAggregationService(
             throw new AuthenticationException("Email address is not verified.");
 
         // generate token
-        var tokenValue = accessTokenGeneratorService.GetToken(foundUser);
 
         // store token
-        var accessToken = new AccessToken(tokenValue.Token, tokenValue.ExpiryTime, foundUser.Id);
-        return await accessTokenService.CreateAsync(accessToken, cancellationToken: cancellationToken);
+        var accessToken = new AccessToken(foundUser.Id);
+
+        var createdToken = await accessTokenService.CreateAsync(accessToken, cancellationToken: cancellationToken);
+        var tokenValue = accessTokenGeneratorService.GetToken(createdToken.Id, foundUser);
+        createdToken.Token = tokenValue.Token;
+        createdToken.ExpiryTime = tokenValue.ExpiryTime;
+
+        // update token
+        return await accessTokenService.UpdateAsync(createdToken, cancellationToken: cancellationToken);
     }
 }

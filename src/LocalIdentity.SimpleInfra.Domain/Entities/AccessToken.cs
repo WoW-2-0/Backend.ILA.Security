@@ -8,10 +8,10 @@ public class AccessToken : AuditableEntity
     {
     }
 
-    public AccessToken(string token, DateTimeOffset expiryTime, Guid userId)
+    public AccessToken(Guid userId)
     {
-        Token = token;
-        ExpiryTime = expiryTime;
+        Token = string.Empty;
+        ExpiryTime = DateTimeOffset.UtcNow;
         UserId = userId;
     }
 

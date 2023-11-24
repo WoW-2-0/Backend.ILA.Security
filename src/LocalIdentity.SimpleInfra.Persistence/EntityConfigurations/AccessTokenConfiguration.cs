@@ -8,7 +8,7 @@ public class AccessTokenConfiguration : IEntityTypeConfiguration<AccessToken>
 {
     public void Configure(EntityTypeBuilder<AccessToken> builder)
     {
-        builder.Property(accessToken => accessToken.Token).IsRequired().HasMaxLength(512);
+        builder.Property(accessToken => accessToken.Token).IsRequired().HasMaxLength(1024);
 
         builder.HasOne<User>().WithMany().HasForeignKey(accessToken => accessToken.UserId);
     }
