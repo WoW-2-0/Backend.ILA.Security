@@ -84,6 +84,7 @@ public static partial class HostConfiguration
     {
         // register configurations
         builder.Services.Configure<PasswordValidationSettings>(builder.Configuration.GetSection(nameof(PasswordValidationSettings)));
+        builder.Services.Configure<JwtSettings>(builder.Configuration.GetSection(nameof(JwtSettings)));
 
         // register db contexts
         builder.Services.AddDbContext<IdentityDbContext>(
@@ -96,11 +97,15 @@ public static partial class HostConfiguration
         );
 
         // register repositories
-        builder.Services.AddScoped<IUserRepository, UserRepository>().AddScoped<IRoleRepository, RoleRepository>();
+        builder.Services
+            .AddScoped<IUserRepository, UserRepository>()
+            .AddScoped<IRoleRepository, RoleRepository>();
 
         // register helper foundation services
-        builder.Services.AddTransient<IPasswordHasherService, PasswordHasherService>()
-            .AddTransient<IPasswordGeneratorService, PasswordGeneratorService>();
+        builder.Services
+            .AddTransient<IPasswordHasherService, PasswordHasherService>()
+            .AddTransient<IPasswordGeneratorService, PasswordGeneratorService>()
+            .AddTransient<IAccessTokenGeneratorService, AccessTokenGeneratorService>();
 
         // register foundation data access services
         builder.Services.AddScoped<IUserService, UserService>().AddScoped<IRoleService, RoleService>();

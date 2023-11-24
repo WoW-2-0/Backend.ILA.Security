@@ -12,9 +12,9 @@ public class AuthAggregationService(
     IPasswordGeneratorService passwordGeneratorService,
     IPasswordHasherService passwordHasherService,
     IAccountAggregatorService accountAggregatorService,
-    // IUserSignInDetailsService userSignInDetailsService,
-    // IAccessTokenGeneratorService accessTokenGeneratorService,
-    // IAccessTokenService accessTokenService,
+    IUserSignInDetailsService userSignInDetailsService,
+    IAccessTokenGeneratorService accessTokenGeneratorService,
+    IAccessTokenService accessTokenService,
     IUserService userService,
     IRoleService roleService
 ) : IAuthAggregationService
@@ -38,26 +38,19 @@ public class AuthAggregationService(
         // Create user
         return await accountAggregatorService.CreateUserAsync(user, cancellationToken);
     }
-    
+
     public async ValueTask<AccessToken> SignInAsync(SignInDetails signInDetails, CancellationToken cancellationToken = default)
     {
-        throw new NotImplementedException();
+        var foundUser = await userService.GetByEmailAddressAsync(signInDetails.EmailAddress, cancellationToken: cancellationToken);
 
-        // var foundUser = await userService.GetByEmailAddressAsync(signInDetails.EmailAddress,  cancellationToken: cancellationToken);
-        //
-        // if (foundUser is null || !passwordHasherService.HashPassword(foundUser.PasswordHash).Equals(foundUser.PasswordHash))
-        //     throw new AuthenticationException("Invalid email address or password.");
-        //
-        // // Validate login location
-        // var locationValidationResult = await userSignInDetailsService.ValidateSignInLocation(cancellationToken);
-        //
-        // // Notify user about changed location
-        //
-        // // Record login info
-        // await userSignInDetailsService.RecordSignInAsync(false, cancellationToken);
-        //
-        // // Generate access token and save it
-        // var tokenValue = accessTokenGeneratorService.GetToken(foundUser);
-        // return await accessTokenService.CreateAsync(foundUser.Id, tokenValue.Token, tokenValue.ExpiryTime, true, cancellationToken);
+        if (foundUser is null || !passwordHasherService.HashPassword(foundUser.PasswordHash).Equals(foundUser.PasswordHash))
+            throw new AuthenticationException("Invalid email address or password.");
+
+        var tokenValue = accessTokenGeneratorService.GetToken(foundUser);
+        return new AccessToken()
+        {
+            ExpiryTime = tokenValue.ExpiryTime,
+            Token = tokenValue.Token
+        };
     }
 }
