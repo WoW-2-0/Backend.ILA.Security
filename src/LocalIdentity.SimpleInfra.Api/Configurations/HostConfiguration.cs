@@ -21,7 +21,9 @@ public static partial class HostConfiguration
     {
         await app.SeedDataAsync();
 
-        app.UseExposers();
+        app
+            .UseIdentityInfrastructure()
+            .UseExposers();
 
         return app;
     }

@@ -1,4 +1,5 @@
 ﻿using System.Reflection;
+using System.Text;
 using FluentValidation;
 using FluentValidation.AspNetCore;
 using LocalIdentity.SimpleInfra.Api.Data;
@@ -16,7 +17,9 @@ using LocalIdentity.SimpleInfra.Persistence.DataContexts;
 using LocalIdentity.SimpleInfra.Persistence.Interceptors;
 using LocalIdentity.SimpleInfra.Persistence.Repositories;
 using LocalIdentity.SimpleInfra.Persistence.Repositories.Interfaces;
+using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.IdentityModel.Tokens;
 
 namespace LocalIdentity.SimpleInfra.Api.Configurations;
 
@@ -106,6 +109,29 @@ public static partial class HostConfiguration
         builder.Services.AddScoped<IAccountAggregatorService, AccountAggregatorService>()
             .AddScoped<IAuthAggregationService, AuthAggregationService>();
 
+        // register authentication handlers
+        var jwtSettings = builder.Configuration.GetSection(nameof(JwtSettings)).Get<JwtSettings>() ??
+                          throw new InvalidOperationException("JwtSettings is not configured.");
+
+        builder.Services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
+            .AddJwtBearer(
+                options =>
+                {
+                    options.RequireHttpsMetadata = false;
+
+                    options.TokenValidationParameters = new TokenValidationParameters
+                    {
+                        ValidateIssuer = jwtSettings.ValidateIssuer,
+                        ValidIssuer = jwtSettings.ValidIssuer,
+                        ValidAudience = jwtSettings.ValidAudience,
+                        ValidateAudience = jwtSettings.ValidateAudience,
+                        ValidateLifetime = jwtSettings.ValidateLifetime,
+                        ValidateIssuerSigningKey = jwtSettings.ValidateIssuerSigningKey,
+                        IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(jwtSettings.SecretKey))
+                    };
+                }
+            );
+
         return builder;
     }
 
@@ -142,6 +168,14 @@ public static partial class HostConfiguration
 
         return app;
     }
+    
+    private static WebApplication UseIdentityInfrastructure(this WebApplication app)
+    {
+        app.UseAuthentication();
+        app.UseAuthorization();
+
+        return app;
+    }
 
     private static WebApplication UseExposers(this WebApplication app)
     {
@@ -149,4 +183,5 @@ public static partial class HostConfiguration
 
         return app;
     }
+    
 }
