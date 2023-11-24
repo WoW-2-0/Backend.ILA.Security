@@ -99,7 +99,8 @@ public static partial class HostConfiguration
         // register repositories
         builder.Services
             .AddScoped<IUserRepository, UserRepository>()
-            .AddScoped<IRoleRepository, RoleRepository>();
+            .AddScoped<IRoleRepository, RoleRepository>()
+            .AddScoped<IAccessTokenRepository, AccessTokenRepository>();
 
         // register helper foundation services
         builder.Services
@@ -108,7 +109,10 @@ public static partial class HostConfiguration
             .AddTransient<IAccessTokenGeneratorService, AccessTokenGeneratorService>();
 
         // register foundation data access services
-        builder.Services.AddScoped<IUserService, UserService>().AddScoped<IRoleService, RoleService>();
+        builder.Services
+            .AddScoped<IUserService, UserService>()
+            .AddScoped<IRoleService, RoleService>()
+            .AddScoped<IAccessTokenService, AccessTokenService>();
 
         // register other higher services
         builder.Services.AddScoped<IAccountAggregatorService, AccountAggregatorService>()
