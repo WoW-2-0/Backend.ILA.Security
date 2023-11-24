@@ -32,7 +32,9 @@ public class UserService(IUserRepository userRepository) : IUserService
         CancellationToken cancellationToken = default
     )
     {
-        return await userRepository.Get(asNoTracking: asNoTracking)
+        return await userRepository
+            .Get(asNoTracking: asNoTracking)
+            .Include(user => user.Role)
             .FirstOrDefaultAsync(user => user.EmailAddress == emailAddress, cancellationToken: cancellationToken);
     }
 

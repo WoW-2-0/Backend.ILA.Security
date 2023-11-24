@@ -12,7 +12,7 @@ public class AuthAggregationService(
     IPasswordGeneratorService passwordGeneratorService,
     IPasswordHasherService passwordHasherService,
     IAccountAggregatorService accountAggregatorService,
-    IUserSignInDetailsService userSignInDetailsService,
+    // IUserSignInDetailsService userSignInDetailsService,
     IAccessTokenGeneratorService accessTokenGeneratorService,
     IAccessTokenService accessTokenService,
     IUserService userService,
@@ -43,14 +43,18 @@ public class AuthAggregationService(
     {
         var foundUser = await userService.GetByEmailAddressAsync(signInDetails.EmailAddress, cancellationToken: cancellationToken);
 
-        if (foundUser is null || !passwordHasherService.HashPassword(foundUser.PasswordHash).Equals(foundUser.PasswordHash))
+        // check user
+        if (foundUser is null || !passwordHasherService.ValidatePassword(signInDetails.Password, foundUser.PasswordHash))
             throw new AuthenticationException("Invalid email address or password.");
 
+        if (!foundUser.IsEmailAddressVerified)
+            throw new AuthenticationException("Email address is not verified.");
+
+        // generate token
         var tokenValue = accessTokenGeneratorService.GetToken(foundUser);
-        return new AccessToken()
-        {
-            ExpiryTime = tokenValue.ExpiryTime,
-            Token = tokenValue.Token
-        };
+
+        // store token
+        var accessToken = new AccessToken(tokenValue.Token, tokenValue.ExpiryTime, foundUser.Id);
+        return await accessTokenService.CreateAsync(accessToken, cancellationToken: cancellationToken);
     }
 }

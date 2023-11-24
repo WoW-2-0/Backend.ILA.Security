@@ -34,7 +34,7 @@ public class AccessTokenGeneratorService(IOptions<JwtSettings> jwtSettings) : IA
             audience: _jwtSettings.ValidAudience,
             claims: claims,
             notBefore: DateTime.UtcNow,
-            expires: DateTime.Now.AddMinutes(_jwtSettings.ExpirationTimeInMinutes),
+            expires: DateTime.UtcNow.AddMinutes(_jwtSettings.ExpirationTimeInMinutes),
             signingCredentials: credentials
         );
     }

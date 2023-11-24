@@ -1,4 +1,6 @@
 ﻿using System.Net;
+using AutoMapper;
+using LocalIdentity.SimpleInfra.Api.Models.Dtos;
 using LocalIdentity.SimpleInfra.Application.Common.Identity.Models;
 using LocalIdentity.SimpleInfra.Application.Common.Identity.Services;
 using LocalIdentity.SimpleInfra.Application.Common.Querying;
@@ -8,7 +10,7 @@ namespace LocalIdentity.SimpleInfra.Api.Controllers;
 
 [ApiController]
 [Route("api/[controller]")]
-public class AuthController(IAuthAggregationService authAggregationService) : ControllerBase
+public class AuthController(IMapper mapper, IAuthAggregationService authAggregationService) : ControllerBase
 {
     #region Authentication
 
@@ -23,7 +25,7 @@ public class AuthController(IAuthAggregationService authAggregationService) : Co
     public async ValueTask<IActionResult> SignIn([FromBody] SignInDetails signInDetails, CancellationToken cancellationToken)
     {
         var result = await authAggregationService.SignInAsync(signInDetails, cancellationToken);
-        return Ok(result);
+        return Ok(mapper.Map<AccessTokenDto>(result));
     }
 
     #endregion
