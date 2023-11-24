@@ -54,7 +54,7 @@ namespace LocalIdentity.SimpleInfra.Persistence.Migrations
                         new
                         {
                             Id = new Guid("0327f1ba-81cf-478f-98d4-04fec56fc10a"),
-                            CreatedTime = new DateTimeOffset(new DateTime(2023, 11, 22, 0, 22, 24, 728, DateTimeKind.Unspecified).AddTicks(3518), new TimeSpan(0, 5, 0, 0, 0)),
+                            CreatedTime = new DateTimeOffset(new DateTime(2023, 11, 24, 12, 4, 29, 898, DateTimeKind.Unspecified).AddTicks(2306), new TimeSpan(0, 5, 0, 0, 0)),
                             IsActive = true,
                             IsDeleted = false,
                             Type = 0
@@ -62,7 +62,7 @@ namespace LocalIdentity.SimpleInfra.Persistence.Migrations
                         new
                         {
                             Id = new Guid("d0b0d6c0-2b7a-4b1a-9f1a-0b9b6a9a5b1a"),
-                            CreatedTime = new DateTimeOffset(new DateTime(2023, 11, 22, 0, 22, 24, 728, DateTimeKind.Unspecified).AddTicks(3550), new TimeSpan(0, 5, 0, 0, 0)),
+                            CreatedTime = new DateTimeOffset(new DateTime(2023, 11, 24, 12, 4, 29, 898, DateTimeKind.Unspecified).AddTicks(2336), new TimeSpan(0, 5, 0, 0, 0)),
                             IsActive = true,
                             IsDeleted = false,
                             Type = 1
@@ -70,7 +70,7 @@ namespace LocalIdentity.SimpleInfra.Persistence.Migrations
                         new
                         {
                             Id = new Guid("d0b0d6c0-2b7a-4b1a-9f1a-0b9b6a9a5b1b"),
-                            CreatedTime = new DateTimeOffset(new DateTime(2023, 11, 22, 0, 22, 24, 728, DateTimeKind.Unspecified).AddTicks(3553), new TimeSpan(0, 5, 0, 0, 0)),
+                            CreatedTime = new DateTimeOffset(new DateTime(2023, 11, 24, 12, 4, 29, 898, DateTimeKind.Unspecified).AddTicks(2338), new TimeSpan(0, 5, 0, 0, 0)),
                             IsActive = true,
                             IsDeleted = false,
                             Type = 2
@@ -186,7 +186,7 @@ namespace LocalIdentity.SimpleInfra.Persistence.Migrations
 
                     b.HasIndex("UserId");
 
-                    b.HasDiscriminator().HasValue(0);
+                    b.HasDiscriminator().HasValue(1);
                 });
 
             modelBuilder.Entity("LocalIdentity.SimpleInfra.Domain.Entities.User", b =>

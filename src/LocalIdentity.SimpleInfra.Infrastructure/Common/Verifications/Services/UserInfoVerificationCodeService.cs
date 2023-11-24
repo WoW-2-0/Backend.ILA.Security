@@ -36,6 +36,22 @@ public class UserInfoVerificationCodeService(
         return (verificationCode, verificationCode.IsActive && verificationCode.ExpiryTime > DateTimeOffset.UtcNow);
     }
 
+    public async ValueTask<VerificationType?> GetVerificationTypeAsync(string code, CancellationToken cancellationToken = default)
+    {
+        var verificationCode = await userInfoVerificationCodeRepository
+            .Get(verificationCode => verificationCode.Code == code, true)
+            .Select(
+                verificationCode => new
+                {
+                    verificationCode.Id,
+                    verificationCode.Type
+                }
+            )
+            .FirstOrDefaultAsync(cancellationToken);
+
+        return verificationCode?.Type;
+    }
+
     public async ValueTask<UserInfoVerificationCode> CreateAsync(
         VerificationCodeType codeType,
         Guid userId,

@@ -1,6 +1,6 @@
 ﻿namespace LocalIdentity.SimpleInfra.Domain.Common.Entities;
 
-public interface IAuditableEntity : IEntity
+public interface IAuditableEntity : ISoftDeletedEntity
 {
     DateTimeOffset CreatedTime { get; set; }
     

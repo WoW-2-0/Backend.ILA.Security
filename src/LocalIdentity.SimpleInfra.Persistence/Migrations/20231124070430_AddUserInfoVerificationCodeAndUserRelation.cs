@@ -6,7 +6,7 @@ using Microsoft.EntityFrameworkCore.Migrations;
 namespace LocalIdentity.SimpleInfra.Persistence.Migrations
 {
     /// <inheritdoc />
-    public partial class AddUserActionVerificationAndUserRelation : Migration
+    public partial class AddUserInfoVerificationCodeAndUserRelation : Migration
     {
         /// <inheritdoc />
         protected override void Up(MigrationBuilder migrationBuilder)
@@ -16,21 +16,21 @@ namespace LocalIdentity.SimpleInfra.Persistence.Migrations
                 keyColumn: "Id",
                 keyValue: new Guid("0327f1ba-81cf-478f-98d4-04fec56fc10a"),
                 column: "CreatedTime",
-                value: new DateTimeOffset(new DateTime(2023, 11, 22, 0, 22, 24, 728, DateTimeKind.Unspecified).AddTicks(3518), new TimeSpan(0, 5, 0, 0, 0)));
+                value: new DateTimeOffset(new DateTime(2023, 11, 24, 12, 4, 29, 898, DateTimeKind.Unspecified).AddTicks(2306), new TimeSpan(0, 5, 0, 0, 0)));
 
             migrationBuilder.UpdateData(
                 table: "Roles",
                 keyColumn: "Id",
                 keyValue: new Guid("d0b0d6c0-2b7a-4b1a-9f1a-0b9b6a9a5b1a"),
                 column: "CreatedTime",
-                value: new DateTimeOffset(new DateTime(2023, 11, 22, 0, 22, 24, 728, DateTimeKind.Unspecified).AddTicks(3550), new TimeSpan(0, 5, 0, 0, 0)));
+                value: new DateTimeOffset(new DateTime(2023, 11, 24, 12, 4, 29, 898, DateTimeKind.Unspecified).AddTicks(2336), new TimeSpan(0, 5, 0, 0, 0)));
 
             migrationBuilder.UpdateData(
                 table: "Roles",
                 keyColumn: "Id",
                 keyValue: new Guid("d0b0d6c0-2b7a-4b1a-9f1a-0b9b6a9a5b1b"),
                 column: "CreatedTime",
-                value: new DateTimeOffset(new DateTime(2023, 11, 22, 0, 22, 24, 728, DateTimeKind.Unspecified).AddTicks(3553), new TimeSpan(0, 5, 0, 0, 0)));
+                value: new DateTimeOffset(new DateTime(2023, 11, 24, 12, 4, 29, 898, DateTimeKind.Unspecified).AddTicks(2338), new TimeSpan(0, 5, 0, 0, 0)));
 
             migrationBuilder.CreateIndex(
                 name: "IX_VerificationCode_UserId",
@@ -62,21 +62,21 @@ namespace LocalIdentity.SimpleInfra.Persistence.Migrations
                 keyColumn: "Id",
                 keyValue: new Guid("0327f1ba-81cf-478f-98d4-04fec56fc10a"),
                 column: "CreatedTime",
-                value: new DateTimeOffset(new DateTime(2023, 11, 22, 0, 21, 26, 31, DateTimeKind.Unspecified).AddTicks(4819), new TimeSpan(0, 5, 0, 0, 0)));
+                value: new DateTimeOffset(new DateTime(2023, 11, 24, 12, 4, 8, 352, DateTimeKind.Unspecified).AddTicks(2665), new TimeSpan(0, 5, 0, 0, 0)));
 
             migrationBuilder.UpdateData(
                 table: "Roles",
                 keyColumn: "Id",
                 keyValue: new Guid("d0b0d6c0-2b7a-4b1a-9f1a-0b9b6a9a5b1a"),
                 column: "CreatedTime",
-                value: new DateTimeOffset(new DateTime(2023, 11, 22, 0, 21, 26, 31, DateTimeKind.Unspecified).AddTicks(4848), new TimeSpan(0, 5, 0, 0, 0)));
+                value: new DateTimeOffset(new DateTime(2023, 11, 24, 12, 4, 8, 352, DateTimeKind.Unspecified).AddTicks(2696), new TimeSpan(0, 5, 0, 0, 0)));
 
             migrationBuilder.UpdateData(
                 table: "Roles",
                 keyColumn: "Id",
                 keyValue: new Guid("d0b0d6c0-2b7a-4b1a-9f1a-0b9b6a9a5b1b"),
                 column: "CreatedTime",
-                value: new DateTimeOffset(new DateTime(2023, 11, 22, 0, 21, 26, 31, DateTimeKind.Unspecified).AddTicks(4850), new TimeSpan(0, 5, 0, 0, 0)));
+                value: new DateTimeOffset(new DateTime(2023, 11, 24, 12, 4, 8, 352, DateTimeKind.Unspecified).AddTicks(2697), new TimeSpan(0, 5, 0, 0, 0)));
         }
     }
 }

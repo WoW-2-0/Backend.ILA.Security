@@ -1,5 +1,6 @@
 ﻿using LocalIdentity.SimpleInfra.Application.Common.Identity.Services;
 using LocalIdentity.SimpleInfra.Application.Common.Verifications.Services;
+using LocalIdentity.SimpleInfra.Domain.Enums;
 
 namespace LocalIdentity.SimpleInfra.Infrastructure.Common.Verifications.Services;
 
@@ -8,16 +9,37 @@ public class VerificationProcessingService
 {
     public async ValueTask<bool> Verify(string code, CancellationToken cancellationToken)
     {
-        var userActionVerificationCode = await userInfoVerificationCodeService.GetByCodeAsync(code, cancellationToken);
+        var codeType = await userInfoVerificationCodeService.GetVerificationTypeAsync(code, cancellationToken) ??
+                       throw new InvalidOperationException("Verification code is not found.");
 
-        if (!userActionVerificationCode.IsValid) return false;
+        var result = codeType switch
+        {
+            VerificationType.UserInfoVerificationCode => VerifyUserInfoAsync(code, cancellationToken),
+            _ => throw new NotSupportedException("Verification type is not supported.")
+        };
 
-        var user = await userService.GetByIdAsync(userActionVerificationCode.Code.UserId, cancellationToken: cancellationToken) ??
+        return await result;
+    }
+
+    private async ValueTask<bool> VerifyUserInfoAsync(string code, CancellationToken cancellationToken = default)
+    {
+        var userInfoVerificationCode = await userInfoVerificationCodeService.GetByCodeAsync(code, cancellationToken);
+
+        if (!userInfoVerificationCode.IsValid) return false;
+
+        var user = await userService.GetByIdAsync(userInfoVerificationCode.Code.UserId, cancellationToken: cancellationToken) ??
                    throw new InvalidOperationException();
 
-        user.IsEmailAddressVerified = true;
-        await userService.UpdateAsync(user, false, cancellationToken);
-        await userInfoVerificationCodeService.DeactivateAsync(userActionVerificationCode.Code.Id, cancellationToken: cancellationToken);
+        switch (userInfoVerificationCode.Code.CodeType)
+        {
+            case VerificationCodeType.EmailAddressVerification:
+                user.IsEmailAddressVerified = true;
+                await userService.UpdateAsync(user, false, cancellationToken);
+                break;
+            default: throw new NotSupportedException();
+        }
+
+        await userInfoVerificationCodeService.DeactivateAsync(userInfoVerificationCode.Code.Id, cancellationToken: cancellationToken);
 
         return true;
     }

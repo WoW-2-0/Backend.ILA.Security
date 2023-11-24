@@ -87,10 +87,8 @@ public static partial class HostConfiguration
             (provider, options) =>
             {
                 options.UseNpgsql(builder.Configuration.GetConnectionString("DefaultConnection"));
-
-                var serviceScope = provider.CreateScope().ServiceProvider;
-                options.AddInterceptors(serviceScope.GetRequiredService<UpdateAuditableInterceptor>());
-                options.AddInterceptors(serviceScope.GetRequiredService<UpdateSoftDeletedInterceptor>());
+                options.AddInterceptors(provider.GetRequiredService<UpdateAuditableInterceptor>());
+                options.AddInterceptors(provider.GetRequiredService<UpdateSoftDeletedInterceptor>());
             }
         );
 
