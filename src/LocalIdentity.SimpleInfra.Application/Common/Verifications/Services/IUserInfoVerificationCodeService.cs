@@ -3,7 +3,7 @@ using LocalIdentity.SimpleInfra.Domain.Enums;
 
 namespace LocalIdentity.SimpleInfra.Application.Common.Verifications.Services;
 
-public interface IUserInfoVerificationCodeService
+public interface IUserInfoVerificationCodeService : IVerificationCodeService
 {
     IList<string> Generate();
 

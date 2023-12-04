@@ -4,9 +4,9 @@ using LocalIdentity.SimpleInfra.Domain.Constants;
 
 namespace LocalIdentity.SimpleInfra.Api.Middlewares;
 
-public class AccessTokenMiddleware(RequestDelegate next)
+public class AccessTokenMiddleware : IMiddleware
 {
-    public async Task InvokeAsync(HttpContext context)
+    public async Task InvokeAsync(HttpContext context, RequestDelegate next)
     {
         var accessTokenService = context.RequestServices.GetRequiredService<IAccessTokenService>();
 
