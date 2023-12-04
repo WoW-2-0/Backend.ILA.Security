@@ -22,45 +22,6 @@ namespace LocalIdentity.SimpleInfra.Persistence.Migrations
 
             NpgsqlModelBuilderExtensions.UseIdentityByDefaultColumns(modelBuilder);
 
-            modelBuilder.Entity("LocalIdentity.SimpleInfra.Domain.Entities.AccessToken", b =>
-                {
-                    b.Property<Guid>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("uuid");
-
-                    b.Property<DateTimeOffset>("CreatedTime")
-                        .HasColumnType("timestamp with time zone");
-
-                    b.Property<DateTimeOffset?>("DeletedTime")
-                        .HasColumnType("timestamp with time zone");
-
-                    b.Property<DateTimeOffset>("ExpiryTime")
-                        .HasColumnType("timestamp with time zone");
-
-                    b.Property<bool>("IsDeleted")
-                        .HasColumnType("boolean");
-
-                    b.Property<bool>("IsRevoked")
-                        .HasColumnType("boolean");
-
-                    b.Property<DateTimeOffset?>("ModifiedTime")
-                        .HasColumnType("timestamp with time zone");
-
-                    b.Property<string>("Token")
-                        .IsRequired()
-                        .HasMaxLength(1024)
-                        .HasColumnType("character varying(1024)");
-
-                    b.Property<Guid>("UserId")
-                        .HasColumnType("uuid");
-
-                    b.HasKey("Id");
-
-                    b.HasIndex("UserId");
-
-                    b.ToTable("AccessTokens");
-                });
-
             modelBuilder.Entity("LocalIdentity.SimpleInfra.Domain.Entities.Role", b =>
                 {
                     b.Property<Guid>("Id")
@@ -87,13 +48,13 @@ namespace LocalIdentity.SimpleInfra.Persistence.Migrations
 
                     b.HasKey("Id");
 
-                    b.ToTable("Roles");
+                    b.ToTable("Roles", (string)null);
 
                     b.HasData(
                         new
                         {
                             Id = new Guid("0327f1ba-81cf-478f-98d4-04fec56fc10a"),
-                            CreatedTime = new DateTimeOffset(new DateTime(2023, 11, 24, 18, 36, 8, 933, DateTimeKind.Unspecified).AddTicks(5990), new TimeSpan(0, 5, 0, 0, 0)),
+                            CreatedTime = new DateTimeOffset(new DateTime(2023, 11, 24, 12, 4, 29, 898, DateTimeKind.Unspecified).AddTicks(2306), new TimeSpan(0, 5, 0, 0, 0)),
                             IsActive = true,
                             IsDeleted = false,
                             Type = 0
@@ -101,7 +62,7 @@ namespace LocalIdentity.SimpleInfra.Persistence.Migrations
                         new
                         {
                             Id = new Guid("d0b0d6c0-2b7a-4b1a-9f1a-0b9b6a9a5b1a"),
-                            CreatedTime = new DateTimeOffset(new DateTime(2023, 11, 24, 18, 36, 8, 933, DateTimeKind.Unspecified).AddTicks(6028), new TimeSpan(0, 5, 0, 0, 0)),
+                            CreatedTime = new DateTimeOffset(new DateTime(2023, 11, 24, 12, 4, 29, 898, DateTimeKind.Unspecified).AddTicks(2336), new TimeSpan(0, 5, 0, 0, 0)),
                             IsActive = true,
                             IsDeleted = false,
                             Type = 1
@@ -109,7 +70,7 @@ namespace LocalIdentity.SimpleInfra.Persistence.Migrations
                         new
                         {
                             Id = new Guid("d0b0d6c0-2b7a-4b1a-9f1a-0b9b6a9a5b1b"),
-                            CreatedTime = new DateTimeOffset(new DateTime(2023, 11, 24, 18, 36, 8, 933, DateTimeKind.Unspecified).AddTicks(6031), new TimeSpan(0, 5, 0, 0, 0)),
+                            CreatedTime = new DateTimeOffset(new DateTime(2023, 11, 24, 12, 4, 29, 898, DateTimeKind.Unspecified).AddTicks(2338), new TimeSpan(0, 5, 0, 0, 0)),
                             IsActive = true,
                             IsDeleted = false,
                             Type = 2
@@ -176,7 +137,7 @@ namespace LocalIdentity.SimpleInfra.Persistence.Migrations
 
                     b.HasIndex("RoleId");
 
-                    b.ToTable("Users");
+                    b.ToTable("Users", (string)null);
                 });
 
             modelBuilder.Entity("LocalIdentity.SimpleInfra.Domain.Entities.VerificationCode", b =>
@@ -209,7 +170,7 @@ namespace LocalIdentity.SimpleInfra.Persistence.Migrations
 
                     b.HasKey("Id");
 
-                    b.ToTable("VerificationCode");
+                    b.ToTable("VerificationCode", (string)null);
 
                     b.HasDiscriminator<int>("Type");
 
@@ -226,15 +187,6 @@ namespace LocalIdentity.SimpleInfra.Persistence.Migrations
                     b.HasIndex("UserId");
 
                     b.HasDiscriminator().HasValue(1);
-                });
-
-            modelBuilder.Entity("LocalIdentity.SimpleInfra.Domain.Entities.AccessToken", b =>
-                {
-                    b.HasOne("LocalIdentity.SimpleInfra.Domain.Entities.User", null)
-                        .WithMany()
-                        .HasForeignKey("UserId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
                 });
 
             modelBuilder.Entity("LocalIdentity.SimpleInfra.Domain.Entities.User", b =>
