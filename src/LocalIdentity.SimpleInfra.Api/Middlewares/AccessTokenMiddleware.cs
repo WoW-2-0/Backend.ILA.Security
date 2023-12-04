@@ -14,7 +14,7 @@ public class AccessTokenMiddleware : IMiddleware
         if (accessTokenIdValue != null)
         {
             var accessTokenId = Guid.Parse(accessTokenIdValue);
-            var foundAccessToken = await accessTokenService.GetByIdAsync(accessTokenId, true) ??
+            var foundAccessToken = await accessTokenService.GetByIdAsync(accessTokenId, context.RequestAborted) ??
                                    throw new AuthenticationException("Access token not found");
 
             if (foundAccessToken.IsRevoked)

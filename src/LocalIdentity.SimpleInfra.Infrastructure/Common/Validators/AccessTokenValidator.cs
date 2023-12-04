@@ -1,4 +1,5 @@
 ﻿using FluentValidation;
+using LocalIdentity.SimpleInfra.Application.Common.Identity.Models;
 using LocalIdentity.SimpleInfra.Domain.Entities;
 using LocalIdentity.SimpleInfra.Domain.Enums;
 using LocalIdentity.SimpleInfra.Infrastructure.Common.Settings;

@@ -14,17 +14,22 @@ public class AccessTokenGeneratorService(IOptions<JwtSettings> jwtSettings) : IA
 {
     private readonly JwtSettings _jwtSettings = jwtSettings.Value;
 
-    public (string Token, DateTimeOffset ExpiryTime) GetToken(Guid accessTokenId, User user)
+    public AccessToken GetToken(User user)
     {
-        var jwtToken = GetJwtToken(accessTokenId, user);
+        var accessToken = new AccessToken
+        {
+            Id = Guid.NewGuid()
+        };
+        var jwtToken = GetJwtToken(user, accessToken);
         var token = new JwtSecurityTokenHandler().WriteToken(jwtToken);
+        accessToken.Token = token;
 
-        return (token, jwtToken.ValidTo);
+        return accessToken;
     }
 
-    private JwtSecurityToken GetJwtToken(Guid accessTokenId, User user)
+    private JwtSecurityToken GetJwtToken(User user, AccessToken accessToken)
     {
-        var claims = GetClaims(accessTokenId, user);
+        var claims = GetClaims(user, accessToken);
 
         var securityKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(_jwtSettings.SecretKey));
         var credentials = new SigningCredentials(securityKey, SecurityAlgorithms.HmacSha256);
@@ -39,14 +44,14 @@ public class AccessTokenGeneratorService(IOptions<JwtSettings> jwtSettings) : IA
         );
     }
 
-    private List<Claim> GetClaims(Guid accessTokenId, User user)
+    private List<Claim> GetClaims(User user, AccessToken accessToken)
     {
         return new List<Claim>()
         {
             new(ClaimTypes.Email, user.EmailAddress),
             new(ClaimTypes.Role, user.Role!.Type.ToString()),
             new(ClaimConstants.UserId, user.Id.ToString()),
-            new(ClaimConstants.AccessTokenId, accessTokenId.ToString()),
+            new(ClaimConstants.AccessTokenId, accessToken.Id.ToString()),
         };
     }
 }

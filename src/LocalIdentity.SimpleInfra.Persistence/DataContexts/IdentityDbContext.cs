@@ -9,8 +9,6 @@ public class IdentityDbContext(DbContextOptions<IdentityDbContext> options) : Db
 
     public DbSet<Role> Roles => Set<Role>();
 
-    public DbSet<AccessToken> AccessTokens => Set<AccessToken>();
-    
     public DbSet<UserInfoVerificationCode> UserInfoVerificationCodes => Set<UserInfoVerificationCode>();
 
     protected override void OnModelCreating(ModelBuilder modelBuilder)

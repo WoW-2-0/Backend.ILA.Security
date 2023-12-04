@@ -8,6 +8,7 @@ public static partial class HostConfiguration
             .AddMappers()
             .AddValidators()
             .AddRequestContextTools()
+            .AddCaching()
             .AddPersistence()
             .AddNotificationInfrastructure()
             .AddVerificationInfrastructure()

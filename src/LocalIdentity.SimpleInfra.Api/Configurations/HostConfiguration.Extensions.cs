@@ -9,11 +9,13 @@ using LocalIdentity.SimpleInfra.Application.Common.Notfications.Services;
 using LocalIdentity.SimpleInfra.Application.Common.RequestContexts.Brokers;
 using LocalIdentity.SimpleInfra.Application.Common.Verifications.Services;
 using LocalIdentity.SimpleInfra.Domain.Brokers;
+using LocalIdentity.SimpleInfra.Infrastructure.Common.Caching.Brokers;
 using LocalIdentity.SimpleInfra.Infrastructure.Common.Identity.Services;
 using LocalIdentity.SimpleInfra.Infrastructure.Common.Notifications;
 using LocalIdentity.SimpleInfra.Infrastructure.Common.RequestContexts.Brokers;
 using LocalIdentity.SimpleInfra.Infrastructure.Common.Settings;
 using LocalIdentity.SimpleInfra.Infrastructure.Common.Verifications.Services;
+using LocalIdentity.SimpleInfra.Persistence.Caching.Brokers;
 using LocalIdentity.SimpleInfra.Persistence.DataContexts;
 using LocalIdentity.SimpleInfra.Persistence.Interceptors;
 using LocalIdentity.SimpleInfra.Persistence.Repositories;
@@ -59,6 +61,26 @@ public static partial class HostConfiguration
         builder.Services.AddHttpContextAccessor();
         builder.Services.AddScoped<IRequestUserContextProvider, RequestUserContextProvider>()
             .AddScoped<IRequestContextProvider, RequestContextProvider>();
+
+
+
+        return builder;
+    }
+
+    private static WebApplicationBuilder AddCaching(this WebApplicationBuilder builder)
+    {
+        // register cache settings
+        builder.Services.Configure<CacheSettings>(builder.Configuration.GetSection(nameof(CacheSettings)));
+
+        // register distributed cache
+        builder.Services.AddStackExchangeRedisCache(
+            options =>
+            {
+                options.Configuration = builder.Configuration.GetConnectionString("RedisConnectionString");
+                options.InstanceName = "Caching.SimpleInfra";
+            }
+        );
+        builder.Services.AddSingleton<ICacheBroker, RedisDistributedCacheBroker>();
 
         return builder;
     }
@@ -119,6 +141,9 @@ public static partial class HostConfiguration
         // register authentication handlers
         var jwtSettings = builder.Configuration.GetSection(nameof(JwtSettings)).Get<JwtSettings>() ??
                           throw new InvalidOperationException("JwtSettings is not configured.");
+
+        // register middleware
+        builder.Services.AddSingleton<AccessTokenMiddleware>();
 
         builder.Services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
             .AddJwtBearer(
