@@ -24,7 +24,7 @@ public class AccessTokenRepository(ICacheBroker cacheBroker) : IAccessTokenRepos
         return cacheBroker.GetAsync<AccessToken>(accessTokenId.ToString(), cancellationToken: cancellationToken);
     }
 
-    public ValueTask RevokeAsync(Guid accessTokenId, CancellationToken cancellationToken = default)
+    public ValueTask RemoveAsync(Guid accessTokenId, CancellationToken cancellationToken = default)
     {
         return cacheBroker.DeleteAsync(accessTokenId.ToString(), cancellationToken: cancellationToken);
     }
