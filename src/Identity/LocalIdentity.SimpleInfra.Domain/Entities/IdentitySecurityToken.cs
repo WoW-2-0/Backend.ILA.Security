@@ -3,9 +3,9 @@ using LocalIdentity.SimpleInfra.Domain.Common.Entities;
 namespace LocalIdentity.SimpleInfra.Domain.Entities;
 
 /// <summary>
-/// Represents token base used as refresh token
+/// Represents security token
 /// </summary>
-public class TokenBase : Entity
+public abstract class IdentitySecurityToken : Entity
 {
     /// <summary>
     /// Gets or sets user Id

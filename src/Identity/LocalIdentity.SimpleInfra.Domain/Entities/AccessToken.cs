@@ -5,7 +5,7 @@ namespace LocalIdentity.SimpleInfra.Domain.Entities;
 /// <summary>
 /// Represents access token
 /// </summary>
-public class AccessToken : TokenBase
+public class AccessToken : IdentitySecurityToken
 {
     public AccessToken()
     {
