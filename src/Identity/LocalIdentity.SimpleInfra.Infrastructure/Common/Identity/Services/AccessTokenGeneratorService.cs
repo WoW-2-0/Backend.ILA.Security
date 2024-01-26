@@ -46,12 +46,12 @@ public class AccessTokenGeneratorService(IOptions<JwtSettings> jwtSettings) : IA
 
     private List<Claim> GetClaims(User user, AccessToken accessToken)
     {
-        return new List<Claim>()
-        {
-            new(ClaimTypes.Email, user.EmailAddress),
-            new(ClaimTypes.Role, user.Role!.Type.ToString()),
-            new(ClaimConstants.UserId, user.Id.ToString()),
-            new(ClaimConstants.AccessTokenId, accessToken.Id.ToString()),
-        };
+        return
+        [
+            new Claim(ClaimTypes.Email, user.EmailAddress),
+            new Claim(ClaimTypes.Role, user.Role!.Type.ToString()),
+            new Claim(ClaimConstants.UserId, user.Id.ToString()),
+            new Claim(JwtRegisteredClaimNames.Jti, accessToken.Id.ToString())
+        ];
     }
 }
