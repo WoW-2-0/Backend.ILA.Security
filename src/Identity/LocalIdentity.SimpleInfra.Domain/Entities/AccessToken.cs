@@ -11,13 +11,9 @@ public class AccessToken : IdentitySecurityToken
     {
     }
 
-    public AccessToken(Guid id, Guid userId, string token, DateTimeOffset expiryTime, bool isRevoked)
+    public AccessToken(Guid id)
     {
         Id = id;
-        UserId = userId;
-        Token = token;
-        ExpiryTime = expiryTime;
-        IsRevoked = isRevoked;
     }
 
     /// <summary>

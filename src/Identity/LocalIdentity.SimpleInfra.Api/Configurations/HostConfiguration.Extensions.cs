@@ -63,7 +63,6 @@ public static partial class HostConfiguration
             .AddScoped<IRequestContextProvider, RequestContextProvider>();
 
 
-
         return builder;
     }
 
@@ -127,7 +126,7 @@ public static partial class HostConfiguration
         // register helper foundation services
         builder.Services.AddTransient<IPasswordHasherService, PasswordHasherService>()
             .AddTransient<IPasswordGeneratorService, PasswordGeneratorService>()
-            .AddTransient<IAccessTokenGeneratorService, AccessTokenGeneratorService>();
+            .AddTransient<IIdentitySecurityTokenGenerationService, IdentitySecurityTokenGenerationService>();
 
         // register foundation data access services
         builder.Services.AddScoped<IUserService, UserService>()
@@ -150,17 +149,7 @@ public static partial class HostConfiguration
                 options =>
                 {
                     options.RequireHttpsMetadata = false;
-
-                    options.TokenValidationParameters = new TokenValidationParameters
-                    {
-                        ValidateIssuer = jwtSettings.ValidateIssuer,
-                        ValidIssuer = jwtSettings.ValidIssuer,
-                        ValidAudience = jwtSettings.ValidAudience,
-                        ValidateAudience = jwtSettings.ValidateAudience,
-                        ValidateLifetime = jwtSettings.ValidateLifetime,
-                        ValidateIssuerSigningKey = jwtSettings.ValidateIssuerSigningKey,
-                        IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(jwtSettings.SecretKey))
-                    };
+                    options.TokenValidationParameters = jwtSettings.MapToTokenValidationParameters();
                 }
             );
 
