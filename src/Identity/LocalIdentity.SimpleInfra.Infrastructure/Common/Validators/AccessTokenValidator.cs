@@ -9,7 +9,7 @@ namespace LocalIdentity.SimpleInfra.Infrastructure.Common.Validators;
 
 public class AccessTokenValidator : AbstractValidator<AccessToken>
 {
-    public AccessTokenValidator(IOptions<JwtSettings> jwtSettings)
+    public AccessTokenValidator(IOptions<IdentityTokenSettings> jwtSettings)
     {
         var jwtSettingsValue = jwtSettings.Value;
 
@@ -17,18 +17,12 @@ public class AccessTokenValidator : AbstractValidator<AccessToken>
             EntityEvent.OnCreate.ToString(),
             () =>
             {
-                RuleFor(accessToken => accessToken.IsRevoked).NotEqual(true);
-
-                RuleFor(accessToken => accessToken.UserId).NotEqual(Guid.Empty);
-            }
-        );
-
-        RuleSet(
-            EntityEvent.OnUpdate.ToString(),
-            () =>
-            {
+                RuleFor(accessToken => accessToken.Id).NotEqual(Guid.Empty);
+                
                 RuleFor(accessToken => accessToken.Token).NotEmpty();
-
+                
+                RuleFor(accessToken => accessToken.UserId).NotEqual(Guid.Empty);
+                
                 RuleFor(accessToken => accessToken.ExpiryTime)
                     .GreaterThan(DateTimeOffset.UtcNow)
                     .Custom(
@@ -41,21 +35,6 @@ public class AccessTokenValidator : AbstractValidator<AccessToken>
                                 );
                         }
                     );
-
-                RuleFor(accessToken => accessToken)
-                    .Custom(
-                        (accessToken, context) =>
-                        {
-                            if (context.RootContextData.TryGetValue(nameof(AccessToken), out var userInfoObj) &&
-                                userInfoObj is AccessToken foundAccessToken)
-                            {
-                                if (accessToken.UserId != foundAccessToken.UserId)
-                                    context.AddFailure(nameof(AccessToken.UserId), $"{nameof(AccessToken.UserId)} cannot be changed.");
-                            }
-                        }
-                    );
-
-                RuleFor(accessToken => accessToken.IsRevoked).NotEqual(true);
             }
         );
     }

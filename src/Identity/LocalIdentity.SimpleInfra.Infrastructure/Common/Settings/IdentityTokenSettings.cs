@@ -6,7 +6,7 @@ namespace LocalIdentity.SimpleInfra.Infrastructure.Common.Settings;
 /// <summary>
 /// Represents jwt security token settings
 /// </summary>
-public class JwtSettings
+public class IdentityTokenSettings
 {
     /// <summary>
     /// Gets or sets a value indicating whether issuer will be validated
@@ -47,6 +47,10 @@ public class JwtSettings
     /// Gets or sets secret key
     /// </summary>
     public string SecretKey { get; set; } = default!;
+    
+    public int RefreshTokenExpirationTimeInMinutes { get; set; }
+    
+    public int RefreshTokenExtendedExpirationTimeInMinutes { get; set; }
 
     /// <summary>
     /// Maps to token validation parameters
