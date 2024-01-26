@@ -1,5 +1,3 @@
-using LocalIdentity.SimpleInfra.Domain.Common.Entities;
-
 namespace LocalIdentity.SimpleInfra.Domain.Entities;
 
 /// <summary>
@@ -11,13 +9,5 @@ public class AccessToken : IdentitySecurityToken
     {
     }
 
-    public AccessToken(Guid id)
-    {
-        Id = id;
-    }
-
-    /// <summary>
-    /// Gets or sets a value indicating whether token is revoked
-    /// </summary>
-    public bool IsRevoked { get; set; }
+    public AccessToken(Guid id, Guid userId, DateTimeOffset expiryTime) => (Id, UserId, ExpiryTime) = (id, userId, expiryTime);
 }

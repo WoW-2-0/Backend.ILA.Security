@@ -19,13 +19,14 @@ public interface IIdentitySecurityTokenGenerationService
     /// Generates refresh token for given user
     /// </summary>
     /// <param name="user">User to create access token for</param>
+    /// <param name="extendedExpiryTime"></param>
     /// <returns>A new instance of refresh token</returns>
-    IdentitySecurityToken GenerateRefreshToken(User user);
+    RefreshToken GenerateRefreshToken(User user, bool extendedExpiryTime = false);
 
     /// <summary>
     /// Gets claims principal from given token value
     /// </summary>
     /// <param name="tokenValue">Valid access token value</param>
     /// <returns>Claims principal</returns>
-    ClaimsPrincipal? GetPrincipal(string tokenValue);
+    AccessToken? GetAccessToken(string tokenValue);
 }

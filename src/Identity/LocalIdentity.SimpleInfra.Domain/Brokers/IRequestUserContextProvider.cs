@@ -3,4 +3,6 @@
 public interface IRequestUserContextProvider
 {
     Guid GetUserIdAsync(CancellationToken cancellationToken = default);
+
+    string? GetAccessToken();
 }

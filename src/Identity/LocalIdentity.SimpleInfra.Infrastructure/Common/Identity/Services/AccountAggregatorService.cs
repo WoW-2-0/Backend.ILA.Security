@@ -16,6 +16,9 @@ public class AccountAggregatorService(
 {
     public async ValueTask<bool> CreateUserAsync(User user, CancellationToken cancellationToken = default)
     {
+        // TODO : for testing purposes only, remove this
+        user.IsEmailAddressVerified = true;
+        
         // create user
         var createdUser = await userService.CreateAsync(user, cancellationToken: cancellationToken);
 

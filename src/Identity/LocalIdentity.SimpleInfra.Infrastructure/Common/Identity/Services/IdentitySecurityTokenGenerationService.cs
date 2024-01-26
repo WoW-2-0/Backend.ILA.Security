@@ -12,20 +12,20 @@ using Microsoft.IdentityModel.Tokens;
 
 namespace LocalIdentity.SimpleInfra.Infrastructure.Common.Identity.Services;
 
-public class IdentitySecurityTokenGenerationService(IOptions<JwtSettings> jwtSettings) : IIdentitySecurityTokenGenerationService
+public class IdentitySecurityTokenGenerationService(IOptions<IdentityTokenSettings> jwtSettings) : IIdentitySecurityTokenGenerationService
 {
-    private readonly JwtSettings _jwtSettings = jwtSettings.Value;
+    private readonly IdentityTokenSettings _identityTokenSettings = jwtSettings.Value;
 
     public AccessToken GenerateAccessToken(User user)
     {
-        var accessToken = new AccessToken(Guid.NewGuid());
+        var accessToken = new AccessToken(Guid.NewGuid(), user.Id, DateTime.UtcNow.AddMinutes(_identityTokenSettings.ExpirationTimeInMinutes));
         var jwtToken = GetJwtToken(user, accessToken);
         accessToken.Token = new JwtSecurityTokenHandler().WriteToken(jwtToken);
 
         return accessToken;
     }
 
-    public IdentitySecurityToken GenerateRefreshToken(User user)
+    public RefreshToken GenerateRefreshToken(User user, bool extendedExpiryTime = false)
     {
         var randomNumber = new byte[32];
         using var rng = RandomNumberGenerator.Create();
@@ -33,16 +33,24 @@ public class IdentitySecurityTokenGenerationService(IOptions<JwtSettings> jwtSet
 
         return new RefreshToken
         {
-            Token = Convert.ToBase64String(randomNumber)
+            Id = Guid.NewGuid(),
+            Token = Convert.ToBase64String(randomNumber),
+            UserId = user.Id,
+            ExpiryTime = DateTime.UtcNow.AddMinutes(
+                extendedExpiryTime
+                    ? _identityTokenSettings.RefreshTokenExtendedExpirationTimeInMinutes
+                    : _identityTokenSettings.RefreshTokenExpirationTimeInMinutes
+            )
         };
     }
 
-    public ClaimsPrincipal? GetPrincipal(string tokenValue)
+    public AccessToken? GetAccessToken(string tokenValue)
     {
         var tokenHandler = new JwtSecurityTokenHandler();
-        var getPrincipal = () =>
+        var getAccessToken = () =>
         {
-            var principal = tokenHandler.ValidateToken(tokenValue, _jwtSettings.MapToTokenValidationParameters(), out var validatedToken);
+            var tokenWithoutPrefix = tokenValue.Replace("Bearer ", string.Empty);
+            var principal = tokenHandler.ValidateToken(tokenWithoutPrefix, _identityTokenSettings.MapToTokenValidationParameters(), out var validatedToken);
 
             // Additional validation to ensure the token is the type we are expecting
             if (validatedToken is not JwtSecurityToken jwtSecurityToken || !jwtSecurityToken.Header.Alg.Equals(
@@ -51,25 +59,31 @@ public class IdentitySecurityTokenGenerationService(IOptions<JwtSettings> jwtSet
                 ))
                 throw new SecurityTokenException("Invalid token");
 
-            return principal;
+            return new AccessToken
+            {
+                Id = Guid.Parse(principal.FindFirst(JwtRegisteredClaimNames.Jti)!.Value),
+                UserId = Guid.Parse(principal.FindFirst(ClaimConstants.UserId)!.Value),
+                Token = tokenValue,
+                ExpiryTime = jwtSecurityToken.ValidTo.ToUniversalTime()
+            };
         };
 
-        return getPrincipal.GetValue().Data;
+        return getAccessToken.GetValue().Data;
     }
 
     private JwtSecurityToken GetJwtToken(User user, AccessToken accessToken)
     {
         var claims = GetClaims(user, accessToken);
 
-        var securityKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(_jwtSettings.SecretKey));
+        var securityKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(_identityTokenSettings.SecretKey));
         var credentials = new SigningCredentials(securityKey, SecurityAlgorithms.HmacSha256);
 
         return new JwtSecurityToken(
-            issuer: _jwtSettings.ValidIssuer,
-            audience: _jwtSettings.ValidAudience,
+            issuer: _identityTokenSettings.ValidIssuer,
+            audience: _identityTokenSettings.ValidAudience,
             claims: claims,
             notBefore: DateTime.UtcNow,
-            expires: DateTime.UtcNow.AddMinutes(_jwtSettings.ExpirationTimeInMinutes),
+            expires: accessToken.ExpiryTime.DateTime,
             signingCredentials: credentials
         );
     }

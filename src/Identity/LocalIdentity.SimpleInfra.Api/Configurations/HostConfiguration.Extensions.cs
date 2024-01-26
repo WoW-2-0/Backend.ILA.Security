@@ -106,11 +106,11 @@ public static partial class HostConfiguration
     {
         // register configurations
         builder.Services.Configure<PasswordValidationSettings>(builder.Configuration.GetSection(nameof(PasswordValidationSettings)));
-        builder.Services.Configure<JwtSettings>(builder.Configuration.GetSection(nameof(JwtSettings)));
+        builder.Services.Configure<IdentityTokenSettings>(builder.Configuration.GetSection(nameof(IdentityTokenSettings)));
 
         // register db contexts
-        builder.Services.AddDbContext<IdentityDbContext>(
-            (provider, options) =>
+        builder.Services
+            .AddDbContext<IdentityDbContext>((provider, options) =>
             {
                 options.UseNpgsql(builder.Configuration.GetConnectionString("DefaultConnection"));
                 options.AddInterceptors(provider.GetRequiredService<UpdateAuditableInterceptor>());
@@ -119,27 +119,31 @@ public static partial class HostConfiguration
         );
 
         // register repositories
-        builder.Services.AddScoped<IUserRepository, UserRepository>()
+        builder.Services
+            .AddScoped<IUserRepository, UserRepository>()
             .AddScoped<IRoleRepository, RoleRepository>()
-            .AddScoped<IAccessTokenRepository, AccessTokenRepository>();
+            .AddScoped<IAccessTokenRepository, AccessTokenRepository>()
+            .AddScoped<IRefreshTokenRepository, RefreshTokenRepository>();;
 
         // register helper foundation services
-        builder.Services.AddTransient<IPasswordHasherService, PasswordHasherService>()
+        builder.Services
+            .AddTransient<IPasswordHasherService, PasswordHasherService>()
             .AddTransient<IPasswordGeneratorService, PasswordGeneratorService>()
             .AddTransient<IIdentitySecurityTokenGenerationService, IdentitySecurityTokenGenerationService>();
 
         // register foundation data access services
-        builder.Services.AddScoped<IUserService, UserService>()
+        builder.Services
+            .AddScoped<IUserService, UserService>()
             .AddScoped<IRoleService, RoleService>()
-            .AddScoped<IAccessTokenService, AccessTokenService>();
+            .AddScoped<IIdentitySecurityTokenService, IdentitySecurityTokenService>();
 
         // register other higher services
         builder.Services.AddScoped<IAccountAggregatorService, AccountAggregatorService>()
             .AddScoped<IAuthAggregationService, AuthAggregationService>();
 
         // register authentication handlers
-        var jwtSettings = builder.Configuration.GetSection(nameof(JwtSettings)).Get<JwtSettings>() ??
-                          throw new InvalidOperationException("JwtSettings is not configured.");
+        var jwtSettings = builder.Configuration.GetSection(nameof(IdentityTokenSettings)).Get<IdentityTokenSettings>() ??
+                          throw new InvalidOperationException("IdentityTokenSettings is not configured.");
 
         // register middleware
         builder.Services.AddSingleton<AccessTokenMiddleware>();

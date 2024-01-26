@@ -19,4 +19,9 @@ public class RequestUserContextProvider(
         var userIdClaim = httpContext.User.Claims.FirstOrDefault(claim => claim.Type == ClaimConstants.UserId)?.Value;
         return userIdClaim is not null ? Guid.Parse(userIdClaim) : _requestUserContextSettings.SystemUserId;
     }
+
+    public string? GetAccessToken()
+    {
+        return httpContextAccessor.HttpContext?.Request.Headers.Authorization;
+    }
 }
