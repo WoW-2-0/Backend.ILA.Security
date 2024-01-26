@@ -3,6 +3,7 @@ using System.Text;
 using FluentValidation;
 using FluentValidation.AspNetCore;
 using LocalIdentity.SimpleInfra.Api.Data;
+using LocalIdentity.SimpleInfra.Api.Formatters;
 using LocalIdentity.SimpleInfra.Api.Middlewares;
 using LocalIdentity.SimpleInfra.Application.Common.Identity.Services;
 using LocalIdentity.SimpleInfra.Application.Common.Notfications.Services;
@@ -75,8 +76,8 @@ public static partial class HostConfiguration
         builder.Services.AddStackExchangeRedisCache(
             options =>
             {
-                options.Configuration = builder.Configuration.GetConnectionString("RedisConnectionString");
-                options.InstanceName = "Caching.SimpleInfra";
+                options.Configuration = builder.Configuration.GetConnectionString("RedisConnection");
+                options.InstanceName = "LocalIdentity.SimpleInfra";
             }
         );
         builder.Services.AddSingleton<ICacheBroker, RedisDistributedCacheBroker>();
@@ -180,7 +181,11 @@ public static partial class HostConfiguration
     private static WebApplicationBuilder AddExposers(this WebApplicationBuilder builder)
     {
         builder.Services.AddRouting(options => options.LowercaseUrls = true);
-        builder.Services.AddControllers();
+        builder.Services.AddControllers(
+            options =>
+            {
+                options.InputFormatters.Add(new TextInputFormatter());
+            });
         builder.Services.AddFluentValidationAutoValidation();
 
         return builder;

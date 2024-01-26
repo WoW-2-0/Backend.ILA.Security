@@ -4,6 +4,7 @@ using LocalIdentity.SimpleInfra.Api.Models.Dtos;
 using LocalIdentity.SimpleInfra.Application.Common.Identity.Models;
 using LocalIdentity.SimpleInfra.Application.Common.Identity.Services;
 using LocalIdentity.SimpleInfra.Application.Common.Querying;
+using LocalIdentity.SimpleInfra.Domain.Entities;
 using Microsoft.AspNetCore.Mvc;
 
 namespace LocalIdentity.SimpleInfra.Api.Controllers;
@@ -25,6 +26,13 @@ public class AuthController(IMapper mapper, IAuthAggregationService authAggregat
     public async ValueTask<IActionResult> SignIn([FromBody] SignInDetails signInDetails, CancellationToken cancellationToken)
     {
         var result = await authAggregationService.SignInAsync(signInDetails, cancellationToken);
+        return Ok(mapper.Map<IdentityTokenDto>(result));
+    }
+
+    [HttpPost("refresh-token")]
+    public async ValueTask<IActionResult> RefreshToken([FromBody] string refreshTokenValue, CancellationToken cancellationToken)
+    {
+        var result = await authAggregationService.RefreshTokenAsync(refreshTokenValue, cancellationToken);
         return Ok(mapper.Map<AccessTokenDto>(result));
     }
 
